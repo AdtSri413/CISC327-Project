@@ -47,9 +47,9 @@ Student Number: 20373921
 
 Team Member #3:
 
-Name:
+Name: Malthus Oh Teng Jie
 
-Student Number:
+Student Number: 20373956
 
 Team Member #4:
 
