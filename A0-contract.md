@@ -53,6 +53,6 @@ Student Number:
 
 Team Member #4:
 
-Name:
+Name: Tiku, Anirudh
 
-Student Number:
+Student Number: 20224698
