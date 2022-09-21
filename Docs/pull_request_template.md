@@ -1,5 +1,4 @@
-## TITLE
-Please include a meaningful title that describes the changes in less than 15 words
+#### Please include a meaningful title that describes the changes in less than 15 words
 
 ## AUTHOR(S)
 Please write your full name(s) here
