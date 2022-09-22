@@ -1,3 +1,7 @@
+'''
+Description: Defines the User model
+'''
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -6,7 +10,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 db = SQLAlchemy(app)
 
 
+
 class User(db.Model):
+    '''
+    Description: Definition of the User model
+    '''
     # Unique ID of the user
     # -> primary key of the model
     user_id = db.Column(db.Integer, primary_key=True)
