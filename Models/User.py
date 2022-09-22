@@ -7,13 +7,15 @@ db = SQLAlchemy(app)
 
 
 class User(db.Model):
-    # Unique ID of the user -> primary key of the model
+    # Unique ID of the user
+    # -> primary key of the model
     user_id = db.Column(db.Integer, primary_key=True)
     # First Name of the user
     user_first_name = db.Column(db.String(120), unique=False, nullable=False)
     # Last Name of the user
     user_last_name = db.Column(db.String(120), unique=False, nullable=False)
-    # Email Address of the user -> must be unique since every email address can only open one account
+    # Email Address of the user
+    # -> must be unique since one email can only open one account
     user_email = db.Column(db.String(120), unique=True, nullable=False)
     # Username of the user's account -> must be unique to identify each account
     user_username = db.Column(db.String(120), unique=True, nullable=False)
@@ -21,6 +23,5 @@ class User(db.Model):
     user_password = db.Column(db.String(120), unique=False, nullable=False)
     # Account Balance
     user_account_balance = db.Column(db.Float, unique=False, nullable=False)
-    
     def __repr__(self):
         return '<User %r>' % self.username
