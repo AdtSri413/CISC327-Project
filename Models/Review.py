@@ -37,4 +37,4 @@ class Review(db.Model):
         Transaction.transaction_id), unique=False, nullable=False)
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<Review %r>' % self.review_id
