@@ -1,8 +1,5 @@
-from time import timezone
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import User
-import Listing
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
@@ -28,13 +25,13 @@ class User(db.Model):
         db.Float, nullable=False)
     # The user ID of the person renting the property
     transaction_renter_id = db.Column(
-        db.Integer, SQLAlchemy.ForeignKey(User.customer_id), nullable=False)
+        db.Integer, nullable=False)
     # The user id of the person who owns the property
     transaction_owner_id = db.Column(
-        db.Integer, SQLAlchemy.ForeignKey(User.customer_id), nullable=False)
+        db.Integer, nullable=False)
     # The ID of the listing being booked
     transaction_listing_id = db.Column(
-        db.Integer, SQLAlchemy.ForeignKey(Listing.listing_id), nullable=False)
+        db.Integer, nullable=False)
 
     def __repr__(self):
         return '<Transaction %r>' % self.transaction_id
