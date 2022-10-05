@@ -120,21 +120,4 @@ class Review(db.Model):
 db.create_all()
 
 
-def register():
-    pass
-
-
-def login():
-    pass
-
-
-def create_listing():
-    pass
-
-
-def update_listing():
-    pass
-
-
-def update_profile():
-    pass
+# Put Assignment 2 functions here
