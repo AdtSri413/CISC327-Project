@@ -1,6 +1,7 @@
 from qbnb import app
 from flask_sqlalchemy import SQLAlchemy
-
+# external library used to validate user email address
+from email_validator import validate_email, EmailNotValidError
 '''
 This file defines data models and related business logics
 '''
@@ -131,11 +132,11 @@ def register(username, email, password):
         Returns:
             User object if register succeeds, otherwise None
     '''
-    if not validate_username(username):
+    if not verify_username(username):
         return None
-    if not validate_email(email):
+    if not verify_email(email):
         return None
-    if not validate_password(password):
+    if not verify_password(password):
         return None
     # R1-8: Billing address is empty at registration
     # R1-9: Postal code is empty at registration
@@ -147,7 +148,7 @@ def register(username, email, password):
     return new_user
     
 
-def validate_username(username):
+def verify_username(username):
     '''
     Helper function to validate username
         Parameters:
@@ -174,7 +175,7 @@ def validate_username(username):
     return True
 
 
-def validate_email(email):
+def verify_email(email):
     '''
     Helper function to validate email
         Parameters:
@@ -201,7 +202,7 @@ def validate_email(email):
     return True
 
 
-def validate_password(password):
+def verify_password(password):
     '''
     Helper function to validate password
         Parameters:
