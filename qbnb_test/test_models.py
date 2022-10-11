@@ -26,7 +26,7 @@ def test_r1_2_register():
                      password="Test123?")
     user2 = register(username="user 11", email="test11@test.com", 
                      password="Test123?")
-    assert user1.user_id != user2.user_id
+    assert user1.id != user2.id
 
 
 # R1-3: The email has to follow addr-spec defined in 
@@ -94,14 +94,14 @@ def test_r1_7_register():
 def test_r1_8_register():
     user = register(username="user 7", email="test7@test.com", 
                     password="Test123?")
-    assert user.user_billing_address == ""
+    assert user.billing_address == ""
 
 
 # R1-9: Postal code is empty at the time of registration.
 def test_r1_9_register():
     user = register(username="user 8", email="test8@test.com", 
                     password="Test123?")
-    assert user.user_postal_code == ""
+    assert user.postal_code == ""
 
 
 # R1-10: Balance should be initialized as 100 at the time
@@ -109,4 +109,4 @@ def test_r1_9_register():
 def test_r1_10_register():
     user = register(username="user 9", email="test9@test.com", 
                     password="Test123?")
-    assert user.user_balance == 100
+    assert user.balance == 100

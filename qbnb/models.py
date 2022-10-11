@@ -1,5 +1,6 @@
 from qbnb import app
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 # external library used to validate user email address
 from email_validator import validate_email, EmailNotValidError
 '''
@@ -150,13 +151,22 @@ def register(username, email, password):
         return None
     if not verify_password(password):
         return None
+    # getting largest ID in the database so far
+    max_id = db.session.query(func.max(User.id)).scalar()
+    if max_id is None:
+        max_id = 0
     # R1-8: Billing address is empty at registration
     # R1-9: Postal code is empty at registration
     # R1-10: Balance initialised as 100 at registration
     new_user = User(username=username, email=email, password=password, 
-                    billing_address="", postal_code="", balance=100)
+                    billing_address="", postal_code="", balance=100, 
+                    id=(max_id + 1))
     db.session.add(new_user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception as e:
+        # re-activates session if error detected while committing
+        db.session.rollback()
     return new_user
     
 
@@ -171,19 +181,15 @@ def verify_username(username):
     # R1-5: Cannot be empty
     if username is None or username == "":
         return False
-    
     # R1-5: Alphanumeric only
     if not username.replace(" ", "").isalnum():
         return False
-    
     # R1-5: Space allowed only if not prefix or suffix
     if username[0] == " " or username[-1] == " ":
         return False
-    
     # R1-6: Longer than 2 characters and less than 20 characters
     if len(username) <= 2 or len(username) >= 20:
         return False
-    
     return True
 
 
@@ -198,21 +204,18 @@ def verify_email(email):
     # R1-1: Cannot be empty
     if email is None or email == "":
         return False
-    
     # R1-3: Must follow RFC 5322 specifications
     try:
         validate_email(email, check_deliverability=False)
     except EmailNotValidError as e:
         print(str(e))
         return False
-    
     # R1-7: Cannot be duplicate
-    result = db.session.execute(select(User).where(User.email == email))
-    print(result)
-    if result:
+    duplicates = User.query.filter_by(email=email).all()
+    if len(duplicates) > 0:
         return False
     return True
-
+    
 
 def verify_password(password):
     '''
