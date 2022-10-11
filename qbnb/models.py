@@ -44,7 +44,7 @@ class Listing(db.Model):
     name = db.Column(db.String(80), unique=True, nullable=False)
     # Address of the listing
     # -> must be unique since one address can only have one listing
-    address = db.Column(db.String(120), unique=True, nullable=False)
+    address = db.Column(db.String(120), unique=True, nullable=True)
     # Daily price of the listing
     price = db.Column(db.Float, unique=False, nullable=False)
     # Listing description
