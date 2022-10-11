@@ -63,29 +63,29 @@ class Booking(db.Model):
     '''
     # Unique ID for the booking
     # -> primary key for the model
-    booking_id = db.Column(
+    id = db.Column(
         db.Integer, primary_key=True)
     # Date the booking was made
-    booking_date = db.Column(
+    date = db.Column(
         db.DateTime(timezone=True), nullable=False)
     # Date the listing reservation will begin
-    booking_start = db.Column(
+    start = db.Column(
         db.DateTime(timezone=True), nullable=False)
     # Date the listing reservation will end
-    booking_end = db.Column(
+    end = db.Column(
         db.DateTime(timezone=True), nullable=False)
     # The amount the user paid
-    booking_price = db.Column(
+    price = db.Column(
         db.Float, nullable=False)
     # The user ID of the user renting the property
-    booking_user_id = db.Column(
+    user_id = db.Column(
         db.Integer, nullable=False)
     # The ID of the listing being booked
-    booking_listing_id = db.Column(
+    listing_id = db.Column(
         db.Integer, nullable=False)
 
     def __repr__(self):
-        return '<Booking %r>' % self.booking_id
+        return '<Booking %r>' % self.id
 
 
 class Review(db.Model):
