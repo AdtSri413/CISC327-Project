@@ -41,7 +41,7 @@ class Listing(db.Model):
     # -> primary key of the model
     id = db.Column(db.Integer, primary_key=True)
     # Name of the listing
-    name = db.Column(db.String(80), unique=False, nullable=False)
+    name = db.Column(db.String(80), unique=True, nullable=False)
     # Address of the listing
     # -> must be unique since one address can only have one listing
     address = db.Column(db.String(120), unique=True, nullable=False)
