@@ -28,7 +28,7 @@ class User(db.Model):
     user_password = db.Column(db.String(120), unique=False, nullable=False)
     # Account Balance
     user_account_balance = db.Column(db.Float, unique=False, nullable=False)
-    
+
     def __repr__(self):
         return '<User %r>' % self.username
 
@@ -39,19 +39,21 @@ class Listing(db.Model):
     '''
     # Unique ID of the listing
     # -> primary key of the model
-    listing_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     # Name of the listing
-    listing_name = db.Column(db.String(120), unique=False, nullable=False)
+    name = db.Column(db.String(80), unique=False, nullable=False)
     # Address of the listing
     # -> must be unique since one address can only have one listing
-    listing_address = db.Column(db.String(120), unique=True, nullable=False)
+    address = db.Column(db.String(120), unique=True, nullable=False)
     # Daily price of the listing
-    listing_price = db.Column(db.Float, unique=False, nullable=False)
-    # Average Customer Rating
-    listing_score = db.Column(db.Float, unique=False, nullable=False)
+    price = db.Column(db.Float, unique=False, nullable=False)
+    # Listing description
+    description = db.Column(db.String(2000), unique=False, nullable=False)
     # Unique ID of the owner
     # -> primary key of owner
-    listing_owner_id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, primary_key=True)
+    # Last Mofified Date
+    last_modified_date = db.Column(db.DateTime, unique=False, nullable=False)
 
     def __repr__(self):
         return '<Listing %r>' % self.listing_name
