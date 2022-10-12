@@ -2,7 +2,7 @@
 Test code for qbnb/models.py (Assignment 1 models and assignment 2 functions)
 '''
 
-from qbnb.models import register, create_listing, login
+from qbnb.models import register, create_listing, login, update_user
 
 
 # R1-1: Email cannot be empty. password cannot be empty.
@@ -120,13 +120,13 @@ def test_r4_1_create_listing():
     '''
 
     assert create_listing(
-        'Ex title R4 1 1', 'Ex description of listing', 
+        'Ex title R4 1 1', 'Ex description of listing',
         1000, '2022-10-05', 'test0@test.com') is True
 
     assert create_listing(
         ' Ex title R4 1 2', 'Ex description of listing',
         1000, '2022-10-05', 'test0@test.com') is False
-    
+
     assert create_listing(
         'Ex title R4 1 3 ', 'Ex description of listing',
         1000, '2022-10-05', 'test0@test.com') is False
@@ -174,7 +174,7 @@ def test_r4_3_create_listing():
         'Ex title R4 3 3', 'x' * 2001, 1000, '2022-10-05', 'test0@test.com') \
         is False
 
-    
+
 def test_r4_4_create_listing():
     '''
     Testing R4-4: If the description is shorter than the title, the 
@@ -244,7 +244,7 @@ def test_r4_7_create_listing():
 
     assert create_listing(
         'Ex title R4 7 3', 'Ex description of listing',
-        1000, '2022-10-05', '') is False    
+        1000, '2022-10-05', '') is False
 
     assert create_listing(
         'Ex title R4 7 4', 'Ex description of listing',
@@ -322,4 +322,77 @@ def test_r2_2_login():
     # Password does not have at least 1 special case
     user = login('test0@test.com', 'Abc123')
     assert user is None
-    
+
+
+def test_r3_1_update_user():
+    '''
+    Testing R3-1: The update_user function is able to update user's 
+    user name, user email, billing address and postal code
+    '''
+    user = update_user(user_id=1, username="Tommy", email="tommy@gmail.com",
+                       billing_address="45 Union Street", postal_code="K7L2N8")
+    assert user is not None
+    assert user.username == "Tommy"
+    assert user.email == "tommy@gmail.com"
+    assert user.billing_address == "45 Union Street"
+    assert user.postal_code == "K7L2N8"
+
+
+def test_r3_2_update_user():
+    '''
+    Testing R3-2: The update_user function should check if the 
+    supplied postal code non-empty, alphanumeric-only and has 
+    no special characters, before checking the database.
+    '''
+    # Supplied postal code should be non-empty
+    user = update_user(user_id=1, postal_code="")
+    assert user is None
+
+    # Supplied postal code should be alphanumeric only
+    user = update_user(user_id=1, postal_code="K7L 2N8")
+    assert user is None
+
+    # Supplied postal code sould have no special characters
+    user = update_user(user_id=1, postal_code="K7L2N@")
+    assert user is None
+
+
+def test_r3_3_update_user():
+    '''
+    Testing R3-3: The update_user function should check if the supplied postal 
+    code is a valid canadian postal code, before checking the database
+    '''
+
+    # Supplied postal code should be a valid canadian postal code
+    # (leading Z is not allowed)
+    user = update_user(user_id=1, postal_code="Z7L2N8")
+    assert user is None
+
+
+def test_r3_4_update_user():
+    '''
+    Testing R3-4: The update_user function should check if the supplied 
+    username follows the above requirement, before checking the database
+
+    '''
+
+    # Supplied username should be non-empty
+    user = update_user(user_id=1, postal_code="")
+    assert user is None
+
+    # Supplied username should be alphanumeric-only
+    user = update_user(user_id=1, postal_code="K7L 2N8")
+    assert user is None
+
+    # Supplied username should have space allowed only if it is not
+    # as the prefix or suffix
+    user = update_user(user_id=1, username=" K7L2N8")
+    assert user is None
+
+    # Supplied username should be longer than 2 characters
+    user = update_user(user_id=1, username="a")
+    assert user is None
+
+    # Supplied username should be less than 20 characters
+    user = update_user(user_id=1, username="abcdefghijklmnopqrstu")
+    assert user is None

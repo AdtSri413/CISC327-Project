@@ -4,6 +4,7 @@ from sqlalchemy import func
 from datetime import datetime
 # external library used to validate user email address
 from email_validator import validate_email, EmailNotValidError
+import re
 
 '''
 This file defines data models and related business logics
@@ -190,6 +191,46 @@ def login(email, password):
     return valids[0]
 
 
+def update_user(user_id, username=None, email=None, billing_address=None,
+                postal_code=None):
+    '''
+    Update users data
+        Parameters:
+            username (string): username
+            email (string):    user email
+            billing_address (string): user billing address
+            postal_code (string): user postal code
+        Returns:
+            The user object if login succeeded otherwise None
+    '''
+
+    toggle = 0
+
+    user = User.query.filter_by(id=user_id).first()
+
+    if username is not None:
+        if not verify_username(username):
+            return None
+        user.username = username
+
+    if email is not None:
+        if not verify_email(email):
+            return None
+        user.email = email
+
+    if billing_address is not None:
+        user.billing_address = billing_address
+
+    if postal_code is not None:
+        if not postal_code_validation(postal_code):
+            return None
+        user.postal_code = postal_code
+
+    db.session.commit()
+
+    return user
+
+
 def verify_username(username):
     '''
     Helper function to validate username
@@ -297,6 +338,33 @@ def verify_email_login(email):
     return True
 
 
+def postal_code_validation(postal_code):
+    # Supplied postal code should be non-empty
+    if postal_code is None or postal_code == "":
+        return False
+
+    # supplied postal code should only be alphanumeric
+    if not postal_code.isalnum():
+        # print(postal_code, postal_code)
+        return False
+
+    # supplied postal code should have no special characters
+    if not re.match("^[a-zA-Z0-9_]*$", postal_code):
+        return False
+
+    # Supplied postal code should be a valid canadian postal code
+    cp = re.compile("[ABCEGHJKLMNPRSTVXY]"
+                    "[0-9]"
+                    "[ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]"
+                    )
+    m = re.match(cp, postal_code)
+    print(postal_code, m)
+    if m:
+        return True
+
+    return False
+
+
 def create_listing(title, description, price, date, email):
     # R4-1: Make sure title does not start with or end with a space
     if title.startswith(' '):
@@ -374,7 +442,7 @@ def create_listing(title, description, price, date, email):
         # If the current id is larger than id, set id to the current id
         if id < cur_id:
             id = cur_id
-    
+
     # Add 1 to id
     id += 1
 
@@ -382,7 +450,7 @@ def create_listing(title, description, price, date, email):
     query = User.query.filter_by(email=email).first()
     user_id = query.id
 
-    listing = Listing(id=id, name=title, description=description, 
+    listing = Listing(id=id, name=title, description=description,
                       price=price, last_modified_date=date,
                       owner_id=user_id)
     # add listing to the current database session
@@ -391,4 +459,3 @@ def create_listing(title, description, price, date, email):
     db.session.commit()
 
     return True
-    
