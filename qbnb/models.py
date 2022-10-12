@@ -340,3 +340,4 @@ def create_listing(title, description, price, date, email):
     db.session.commit()
 
     return True
+    
