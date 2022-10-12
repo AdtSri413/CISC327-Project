@@ -146,9 +146,11 @@ def register(username, email, password):
     if not verify_password(password):
         return None
     # getting largest ID in the database so far
-    max_id = db.session.query(func.max(User.id)).scalar()
-    if max_id is None:
-        max_id = 0
+    max_id = 0
+    results = db.session.query(db.func.max(User.id))
+    for row in results:
+        if row[0] is not None:
+            max_id = row[0]
     # R1-8: Billing address is empty at registration
     # R1-9: Postal code is empty at registration
     # R1-10: Balance initialised as 100 at registration
@@ -207,6 +209,7 @@ def verify_email(email):
     # R1-7: Cannot be duplicate
     duplicates = User.query.filter_by(email=email).all()
     if len(duplicates) > 0:
+        print("duplicates found")
         return False
     return True
     
