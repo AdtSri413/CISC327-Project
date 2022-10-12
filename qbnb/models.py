@@ -6,7 +6,6 @@ from datetime import datetime
 from email_validator import validate_email, EmailNotValidError
 import re
 
-
 '''
 This file defines data models and related business logics
 '''
@@ -135,6 +134,8 @@ db.create_all()
 
 
 # Put Assignment 2 functions here
+
+
 def register(username, email, password):
     '''
     Check register parameters
