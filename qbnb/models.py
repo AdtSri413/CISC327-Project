@@ -35,7 +35,6 @@ class User(db.Model):
     # Account Balance
     balance = db.Column(db.Float, unique=False, nullable=False)
 
-
     def __repr__(self):
         return '<User %r>' % self.username
 
