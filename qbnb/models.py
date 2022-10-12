@@ -135,70 +135,6 @@ db.create_all()
 
 
 # Put Assignment 2 functions here
-def update_listing(id, name, description, price, email):
-    '''
-    Description: Update Listing
-        Parameters:
-            id (Integer): Listing ID
-            name (String): Listing Name
-            price (String): Listing Price
-            description (String): Listing Description
-            email (String): User Email
-        Returns:
-            True if product update succeeded otherwise False
-    '''
-    # Check if name contains only alphanumeric chars and spaces
-    if not name.replace(" ", "").isalnum():
-        return
-    # Check if name starts or ends with a space
-    if (name.startswith(' ') or
-            name.endswith(' ')):
-        return
-    # Check the length of name
-    if len(name) > 80:
-        return
-    # Check the length of description
-    if (len(description) > 2000 or
-            len(description) < 20):
-        return
-    # Check if the description is longer than the name
-    if len(description) <= len(name):
-        return
-    # Check if the price is in the correct range
-    if not (price in range(10, 10001)):
-        return
-    # Check if price has increased
-    price_list = Listing.query.filter_by(price=price).all()
-    for p in price_list:
-        if price < p:
-            return
-    # Owner email cannot be empty
-    if email is None or email == "":
-        return
-    # Check if email is a valid email address
-    if len(User.query.filter_by(email=email).all()) == 0:
-        return
-    # Check if user created a listing with a name that already 
-    # exists
-    if name in Listing.query.filter_by(name=name).all():
-        return
-    # Update date when update operation is successful
-    date = datetime.now()
-    # Check last_modified_date must be after 2021-01-02 and before
-    # 2025-01-02
-    if (date < datetime(2021, 1, 2) or date > datetime(2025, 1, 2)):
-        return
-    # Get the user_id that corresponds to the user_email
-    query = User.query.filter_by(email=email).first()
-    user_id = query.owner_id
-    # Update listing
-    listing = Listing(id=id, name=name, price=price, description=description,
-                      owner_id=user_id, last_modified_date=date)
-    db.session.update(listing)
-    db.session.commit()
-    return True
-
-
 def register(username, email, password):
     '''
     Check register parameters
@@ -529,4 +465,68 @@ def create_listing(title, description, price, date, email):
     # actually save the user object
     db.session.commit()
 
+    return True
+
+
+def update_listing(id, name, description, price, email):
+    '''
+    Description: Update Listing
+        Parameters:
+            id (Integer): Listing ID
+            name (String): Listing Name
+            price (String): Listing Price
+            description (String): Listing Description
+            email (String): User Email
+        Returns:
+            True if product update succeeded otherwise False
+    '''
+    # Check if name contains only alphanumeric chars and spaces
+    if not name.replace(" ", "").isalnum():
+        return
+    # Check if name starts or ends with a space
+    if (name.startswith(' ') or
+            name.endswith(' ')):
+        return
+    # Check the length of name
+    if len(name) > 80:
+        return
+    # Check the length of description
+    if (len(description) > 2000 or
+            len(description) < 20):
+        return
+    # Check if the description is longer than the name
+    if len(description) <= len(name):
+        return
+    # Check if the price is in the correct range
+    if not (price in range(10, 10001)):
+        return
+    # Check if price has increased
+    price_list = Listing.query.filter_by(price=price).all()
+    for p in price_list:
+        if price < p:
+            return
+    # Owner email cannot be empty
+    if email is None or email == "":
+        return
+    # Check if email is a valid email address
+    if len(User.query.filter_by(email=email).all()) == 0:
+        return
+    # Check if user created a listing with a name that already 
+    # exists
+    if name in Listing.query.filter_by(name=name).all():
+        return
+    # Update date when update operation is successful
+    date = datetime.now()
+    # Check last_modified_date must be after 2021-01-02 and before
+    # 2025-01-02
+    if (date < datetime(2021, 1, 2) or date > datetime(2025, 1, 2)):
+        return
+    # Get the user_id that corresponds to the user_email
+    query = User.query.filter_by(email=email).first()
+    user_id = query.owner_id
+    # Update listing
+    listing = Listing(id=id, name=name, price=price, description=description,
+                      owner_id=user_id, last_modified_date=date)
+    db.session.update(listing)
+    db.session.commit()
     return True
