@@ -28,7 +28,7 @@ class User(db.Model):
     user_password = db.Column(db.String(120), unique=False, nullable=False)
     # Account Balance
     user_account_balance = db.Column(db.Float, unique=False, nullable=False)
-    
+
     def __repr__(self):
         return '<User %r>' % self.username
 
@@ -94,20 +94,16 @@ class Review(db.Model):
     '''
     # Unique ID of review
     # -> Primary key of the table
-    review_id = db.Column(db.Integer, primary_key=True)
-    # Review message
-    review_message = db.Column(db.String(140), unique=False, nullable=False)
-    # Date of review creation
-    review_date = db.Column(
-        db.DateTime(timezone=True), unique=False, nullable=False)
-    # Review score
-    review_score = db.Column(db.Float(), unique=False, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
     # ID of the user that made the review
-    review_user_id = db.Column(db.Integer, unique=False, nullable=False)
-    # Transaction ID that the review belong to
-    review_transaction_id = db.Column(db.Integer, unique=False, nullable=False)
+    user_id = db.Column(db.Integer, unique=False, nullable=False)
     # Listing ID that the review belong to
-    review_listing_id = db.Column(db.Integer, unique=False, nullable=False)
+    listing_id = db.Column(db.Integer, unique=False, nullable=False)
+    # Review message
+    review_text = db.Column(db.String(1000), unique=False, nullable=False)
+    # Date of review creation
+    date = db.Column(
+        db.DateTime(timezone=True), unique=False, nullable=False)
 
     def __repr__(self):
         return '<Review %r>' % self.review_id
