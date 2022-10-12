@@ -59,38 +59,35 @@ class Listing(db.Model):
         return '<Listing %r>' % self.listing_name
 
 
-class Transaction(db.Model):
+class Booking(db.Model):
     '''
-    Description: Definition of the Transaction model
+    Description: Definition of the Booking model
     '''
-    # Unique ID for the transaction
+    # Unique ID for the booking
     # -> primary key for the model
-    transaction_id = db.Column(
+    id = db.Column(
         db.Integer, primary_key=True)
-    # Date the transaction was made
-    transaction_date = db.Column(
+    # Date the booking was made
+    date = db.Column(
         db.DateTime(timezone=True), nullable=False)
-    # The first day the listing is booked for
-    transaction_start_of_stay = db.Column(
+    # Date the listing reservation will begin
+    start = db.Column(
         db.DateTime(timezone=True), nullable=False)
-    # The last day the listing is booked for
-    transaction_end_of_stay = db.Column(
+    # Date the listing reservation will end
+    end = db.Column(
         db.DateTime(timezone=True), nullable=False)
     # The amount the user paid
-    transaction_cost = db.Column(
+    price = db.Column(
         db.Float, nullable=False)
-    # The user ID of the person renting the property
-    transaction_renter_id = db.Column(
-        db.Integer, nullable=False)
-    # The user id of the person who owns the property
-    transaction_owner_id = db.Column(
+    # The user ID of the user renting the property
+    user_id = db.Column(
         db.Integer, nullable=False)
     # The ID of the listing being booked
-    transaction_listing_id = db.Column(
+    listing_id = db.Column(
         db.Integer, nullable=False)
 
     def __repr__(self):
-        return '<Transaction %r>' % self.transaction_id
+        return '<Booking %r>' % self.id
 
 
 class Review(db.Model):
