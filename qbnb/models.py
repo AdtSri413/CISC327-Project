@@ -1,6 +1,8 @@
 from qbnb import app
 from flask_sqlalchemy import SQLAlchemy
-
+from sqlalchemy import func
+# external library used to validate user email address
+from email_validator import validate_email, EmailNotValidError
 '''
 This file defines data models and related business logics
 '''
@@ -122,3 +124,121 @@ db.create_all()
 
 
 # Put Assignment 2 functions here
+def register(username, email, password):
+    '''
+    Check register parameters
+        Parameters:
+            username (string): user username
+            email (string): user email
+            password (string): user password
+        Returns:
+            User object if register succeeds, otherwise None
+    '''
+    if not verify_username(username):
+        return None
+    if not verify_email(email):
+        return None
+    if not verify_password(password):
+        return None
+    # getting largest ID in the database so far
+    # initialising max_id as 0 for first ever User in database
+    max_id = 0
+    # query for maximum value in id column
+    results = db.session.query(db.func.max(User.id))
+    for row in results:
+        if row[0] is not None:
+            max_id = row[0]
+    # R1-8: Billing address is empty at registration
+    # R1-9: Postal code is empty at registration
+    # R1-10: Balance initialised as 100 at registration
+    new_user = User(username=username, email=email, password=password, 
+                    billing_address="", postal_code="", balance=100, 
+                    id=(max_id + 1))  # increments max_id by 1 for uniqueness
+    db.session.add(new_user)
+    try:
+        db.session.commit()
+    except Exception as e:
+        # re-activates session if error detected while committing
+        db.session.rollback()
+    return new_user
+    
+
+def verify_username(username):
+    '''
+    Helper function to validate username
+        Parameters:
+            username (string): user username
+        Returns:
+            True if username is valid, otherwise False
+    '''
+    # R1-5: Cannot be empty
+    if username is None or username == "":
+        return False
+    # R1-5: Alphanumeric only
+    if not username.replace(" ", "").isalnum():
+        return False
+    # R1-5: Space allowed only if not prefix or suffix
+    if username[0] == " " or username[-1] == " ":
+        return False
+    # R1-6: Longer than 2 characters and less than 20 characters
+    if len(username) <= 2 or len(username) >= 20:
+        return False
+    return True
+
+
+def verify_email(email):
+    '''
+    Helper function to validate email
+        Parameters:
+            email (string): user email
+        Returns:
+            True if email is valid, otherwise False
+    '''
+    # R1-1: Cannot be empty
+    if email is None or email == "":
+        return False
+    # R1-3: Must follow RFC 5322 specifications
+    try:
+        validate_email(email, check_deliverability=False)
+    except EmailNotValidError as e:
+        print(str(e))
+        return False
+    # R1-7: Cannot be duplicate
+    # queries for all records where email is the same as potential user's
+    duplicates = User.query.filter_by(email=email).all()
+    if len(duplicates) > 0:
+        print("duplicates found")
+        return False
+    return True
+    
+
+def verify_password(password):
+    '''
+    Helper function to validate password
+        Parameters:
+            password (string): user password
+        Returns:
+            True if password is valid, otherwise False
+    '''
+    # R1-1: Cannot be empty.
+    if password is None or password == "":
+        return False
+    
+    # R1-4: Minimum length 6
+    if len(password) <= 6:
+        return False
+    
+    # R1-4: At least one special character
+    special_characters = " !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
+    if not any(c in special_characters for c in password):
+        return False
+    
+    # R1-4: At least one lower case
+    if not any(c.islower() for c in password):
+        return False
+    
+    # R1-4: At least one upper case
+    if not any(c.isupper() for c in password):
+        return False
+    
+    return True
