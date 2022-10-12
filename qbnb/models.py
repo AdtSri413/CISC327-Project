@@ -157,8 +157,8 @@ def update_listing(id, name, description, price, email):
     if (len(description) > 2000 or
             len(description) < 20):
         return
-    # Check if the description is longer than name
-    if len(description) < len(name):
+    # Check if the description is longer than the name
+    if len(description) <= len(name):
         return
     # Check if the price is in the correct range
     if not (price in range(10, 10001)):
@@ -166,7 +166,7 @@ def update_listing(id, name, description, price, email):
     # Check if price has increased
     price_list = Listing.query.filter_by(price=price).all()
     for p in price_list:
-        if price <= p:
+        if price < p:
             return
     # Owner email cannot be empty
     if email is None or email == "":
@@ -176,7 +176,7 @@ def update_listing(id, name, description, price, email):
         return
     # Check if user created a listing with a name that already 
     # exists
-    if name in Listing.listing_name:
+    if name in Listing.query.filter_by(name=name).all():
         return
     # Update date when update operation is successful
     date = datetime.now()
