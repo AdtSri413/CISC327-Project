@@ -187,7 +187,6 @@ def update_listing(id, name, description, price, email):
     # Get the user_id that corresponds to the user_email
     query = User.query.filter_by(email=email).first()
     user_id = query.owner_id
-
     # Update listing
     listing = Listing(id=id, name=name, price=price, description=description,
                       owner_id=user_id, last_modified_date=date)
