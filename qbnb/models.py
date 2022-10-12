@@ -125,14 +125,15 @@ db.create_all()
 
 
 # Put Assignment 2 functions here
-def update_listing(id, name, address, price, description, email):
+def update_listing(id, name, price, description, email):
     '''
     Description: Update Listing
         Parameters:
             id (Integer): Listing ID
             name (String): Listing Name
-            address (String): Listing Address
             price (String): Listing Price
+            description (String): Listing Description
+            email (String): User Email
         Returns:
             True if product update succeeded otherwise False
     '''
@@ -176,7 +177,7 @@ def update_listing(id, name, address, price, description, email):
     if (date < datetime(2021, 1, 2) or date > datetime(2025, 1, 2)):
         return
     # Update listing
-    listing = Listing(id=id, name=name, address=address, price=price,
+    listing = Listing(id=id, name=name, price=price,
                       last_modified_date=date, description=description)
     db.session.update(listing)
     db.session.commit()
