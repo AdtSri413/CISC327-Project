@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from datetime import datetime
 # external library used to validate user email address
-from email_validator import validate_email, EmailNotValidError
 import re
 
 '''
@@ -460,7 +459,7 @@ def create_listing(title, description, price, date, email):
 
     return True
 
-    
+
 def update_listing(id, name, description, price, email):
     '''
     Description: Update Listing
