@@ -505,7 +505,7 @@ def update_listing(id, name, description, price, email):
     if not (price in range(10, 10001)):
         return
     # Check if price has increased
-    query = Listing.query.filter_by(email=email).first()
+    query = Listing.query.filter_by(id=id).first()
     if query.price > price:
         return
     # Owner email cannot be empty
@@ -525,7 +525,7 @@ def update_listing(id, name, description, price, email):
     if (date < datetime(2021, 1, 2) or date > datetime(2025, 1, 2)):
         return
     # Get the user_id that corresponds to the user_email
-    query = User.query.filter_by(id=id).first()
+    query = User.query.filter_by(email=email).first()
     user_id = query.owner_id
     # Update listing
     listing = Listing(id=id, name=name, price=price, description=description,
