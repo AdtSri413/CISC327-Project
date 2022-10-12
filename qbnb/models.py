@@ -67,7 +67,7 @@ class Listing(db.Model):
     last_modified_date = db.Column(db.DateTime, unique=False, nullable=False)
 
     def __repr__(self):
-        return '<Listing %r>' % self.listing_name
+        return '<Listing %r>' % self.name
 
 
 class Transaction(db.Model):
