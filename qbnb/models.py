@@ -1,8 +1,9 @@
-from queue import Empty
-from random import randint
 from qbnb import app
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 from datetime import datetime
+# external library used to validate user email address
+from email_validator import validate_email, EmailNotValidError
 
 '''
 This file defines data models and related business logics
@@ -18,18 +19,26 @@ class User(db.Model):
     # Unique ID of the user
     # -> primary key of the model
     id = db.Column(db.Integer, primary_key=True)
+    
     # Email Address of the user
     # -> must be unique since one email can only open one account
     email = db.Column(db.String(120), unique=True, nullable=False)
-    # Username of the user's account -> must be unique to identify each account
-    username = db.Column(db.String(120), unique=True, nullable=False)
+
     # Password of the user's account -> doesn't have to be unique
     password = db.Column(db.String(120), unique=False, nullable=False)
-    billing_address = db.Column(db.String(120), unique=False, nullable=False)
-    postal_code = db.Column(db.String(6), unique=False, nullable=False)
-    # Account Balance
-    account_balance = db.Column(db.Float, unique=False, nullable=False)
     
+    # Username of the user's account -> must be unique to identify each account
+    username = db.Column(db.String(120), unique=True, nullable=False)
+    
+    # Billing Address
+    billing_address = db.Column(db.String(120), unique=False, nullable=False)
+
+    # Postal Code
+    postal_code = db.Column(db.String(120), unique=False, nullable=False)
+    
+    # Account Balance
+    balance = db.Column(db.Float, unique=False, nullable=False)
+
     def __repr__(self):
         return '<User %r>' % self.username
 
@@ -45,17 +54,19 @@ class Listing(db.Model):
     name = db.Column(db.String(80), unique=True, nullable=False)
     # Address of the listing
     # -> must be unique since one address can only have one listing
-    description = db.Column(db.String(2000), nullable=False)
+    address = db.Column(db.String(120), unique=True, nullable=True)
     # Daily price of the listing
     price = db.Column(db.Float, unique=False, nullable=False)
-    date = db.Column(db.DateTime(timezone=True), nullable=False)
-    user_email = db.Column(db.String(80), nullable=False,)
+    # Listing description
+    description = db.Column(db.String(2000), unique=False, nullable=False)
     # Unique ID of the owner
     # -> primary key of owner
-    user_id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, primary_key=True)
+    # Last Mofified Date
+    last_modified_date = db.Column(db.DateTime, unique=False, nullable=False)
 
     def __repr__(self):
-        return '<Listing %r>' % self.id
+        return '<Listing %r>' % self.listing_name
 
 
 class Booking(db.Model):
@@ -115,6 +126,125 @@ db.create_all()
 
 
 # Put Assignment 2 functions here
+def register(username, email, password):
+    '''
+    Check register parameters
+        Parameters:
+            username (string): user username
+            email (string): user email
+            password (string): user password
+        Returns:
+            User object if register succeeds, otherwise None
+    '''
+    if not verify_username(username):
+        return None
+    if not verify_email(email):
+        return None
+    if not verify_password(password):
+        return None
+    # getting largest ID in the database so far
+    # initialising max_id as 0 for first ever User in database
+    max_id = 0
+    # query for maximum value in id column
+    results = db.session.query(db.func.max(User.id))
+    for row in results:
+        if row[0] is not None:
+            max_id = row[0]
+    # R1-8: Billing address is empty at registration
+    # R1-9: Postal code is empty at registration
+    # R1-10: Balance initialised as 100 at registration
+    new_user = User(username=username, email=email, password=password, 
+                    billing_address="", postal_code="", balance=100, 
+                    id=(max_id + 1))  # increments max_id by 1 for uniqueness
+    db.session.add(new_user)
+    try:
+        db.session.commit()
+    except Exception as e:
+        # re-activates session if error detected while committing
+        db.session.rollback()
+    return new_user
+    
+
+def verify_username(username):
+    '''
+    Helper function to validate username
+        Parameters:
+            username (string): user username
+        Returns:
+            True if username is valid, otherwise False
+    '''
+    # R1-5: Cannot be empty
+    if username is None or username == "":
+        return False
+    # R1-5: Alphanumeric only
+    if not username.replace(" ", "").isalnum():
+        return False
+    # R1-5: Space allowed only if not prefix or suffix
+    if username[0] == " " or username[-1] == " ":
+        return False
+    # R1-6: Longer than 2 characters and less than 20 characters
+    if len(username) <= 2 or len(username) >= 20:
+        return False
+    return True
+
+
+def verify_email(email):
+    '''
+    Helper function to validate email
+        Parameters:
+            email (string): user email
+        Returns:
+            True if email is valid, otherwise False
+    '''
+    # R1-1: Cannot be empty
+    if email is None or email == "":
+        return False
+    # R1-3: Must follow RFC 5322 specifications
+    try:
+        validate_email(email, check_deliverability=False)
+    except EmailNotValidError as e:
+        print(str(e))
+        return False
+    # R1-7: Cannot be duplicate
+    # queries for all records where email is the same as potential user's
+    duplicates = User.query.filter_by(email=email).all()
+    if len(duplicates) > 0:
+        print("duplicates found")
+        return False
+    return True
+    
+
+def verify_password(password):
+    '''
+    Helper function to validate password
+        Parameters:
+            password (string): user password
+        Returns:
+            True if password is valid, otherwise False
+    '''
+    # R1-1: Cannot be empty.
+    if password is None or password == "":
+        return False
+    
+    # R1-4: Minimum length 6
+    if len(password) <= 6:
+        return False
+    
+    # R1-4: At least one special character
+    special_characters = " !\"#$%&'()*+,-./:;<=>?@[]^_`{|}~\\"
+    if not any(c in special_characters for c in password):
+        return False
+    
+    # R1-4: At least one lower case
+    if not any(c.islower() for c in password):
+        return False
+    
+    # R1-4: At least one upper case
+    if not any(c.isupper() for c in password):
+        return False
+    
+    return True
+
 
 def create_listing(title, description, price, date, email):
     # R4-1: Make sure title does not start with or end with a space
@@ -167,7 +297,7 @@ def create_listing(title, description, price, date, email):
         return False
 
     # R4-7: User email cannot be empty and must be in the database
-    if email == None or email == "":
+    if email is None or email == "":
         print("ERROR: User email cannot be empty")
         return False
     # check if the email is registered to a user:
@@ -182,7 +312,6 @@ def create_listing(title, description, price, date, email):
         print("ERROR: Listing title already used")
         return False
 
-
     # create a new listing
 
     # get the largest id. Each id will be the previous largest id + 1
@@ -196,21 +325,18 @@ def create_listing(title, description, price, date, email):
             id = cur_id
     
     # Add 1 to id
-    id+=1
+    id += 1
 
     # Get the user_id that corresponds to the user_email
     query = User.query.filter_by(email=email).first()
     user_id = query.id
 
-    listing = Listing(id=id, name=title, description=description, price=price, date=date, user_email=email, user_id=user_id)
+    listing = Listing(id=id, name=title, description=description, 
+                      price=price, last_modified_date=date,
+                      owner_id=user_id)
     # add listing to the current database session
     db.session.add(listing)
     # actually save the user object
     db.session.commit()
 
     return True
-
-def create_user():
-    user = User(id=0, email="test0@test.com", username="example", password="passw0rd!", billing_address="123 Test Street", postal_code="A0A0A0", account_balance=1000)
-    db.session.add(user)
-    db.session.commit()
