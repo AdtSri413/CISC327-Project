@@ -125,7 +125,7 @@ db.create_all()
 
 
 # Put Assignment 2 functions here
-def updateListing(id, name, address, price, description, email):
+def update_listing(id, name, address, price, description, email):
     '''
     Description: Update Listing
         Parameters:
