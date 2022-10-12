@@ -34,7 +34,8 @@ class User(db.Model):
     
     # Account Balance
     balance = db.Column(db.Float, unique=False, nullable=False)
-    
+
+
     def __repr__(self):
         return '<User %r>' % self.username
 
@@ -45,56 +46,55 @@ class Listing(db.Model):
     '''
     # Unique ID of the listing
     # -> primary key of the model
-    listing_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     # Name of the listing
-    listing_name = db.Column(db.String(120), unique=False, nullable=False)
+    name = db.Column(db.String(80), unique=True, nullable=False)
     # Address of the listing
     # -> must be unique since one address can only have one listing
-    listing_address = db.Column(db.String(120), unique=True, nullable=False)
+    address = db.Column(db.String(120), unique=True, nullable=True)
     # Daily price of the listing
-    listing_price = db.Column(db.Float, unique=False, nullable=False)
-    # Average Customer Rating
-    listing_score = db.Column(db.Float, unique=False, nullable=False)
+    price = db.Column(db.Float, unique=False, nullable=False)
+    # Listing description
+    description = db.Column(db.String(2000), unique=False, nullable=False)
     # Unique ID of the owner
     # -> primary key of owner
-    listing_owner_id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, primary_key=True)
+    # Last Mofified Date
+    last_modified_date = db.Column(db.DateTime, unique=False, nullable=False)
 
     def __repr__(self):
         return '<Listing %r>' % self.listing_name
 
 
-class Transaction(db.Model):
+class Booking(db.Model):
     '''
-    Description: Definition of the Transaction model
+    Description: Definition of the Booking model
     '''
-    # Unique ID for the transaction
+    # Unique ID for the booking
     # -> primary key for the model
-    transaction_id = db.Column(
+    id = db.Column(
         db.Integer, primary_key=True)
-    # Date the transaction was made
-    transaction_date = db.Column(
+    # Date the booking was made
+    date = db.Column(
         db.DateTime(timezone=True), nullable=False)
-    # The first day the listing is booked for
-    transaction_start_of_stay = db.Column(
+    # Date the listing reservation will begin
+    start = db.Column(
         db.DateTime(timezone=True), nullable=False)
-    # The last day the listing is booked for
-    transaction_end_of_stay = db.Column(
+    # Date the listing reservation will end
+    end = db.Column(
         db.DateTime(timezone=True), nullable=False)
     # The amount the user paid
-    transaction_cost = db.Column(
+    price = db.Column(
         db.Float, nullable=False)
-    # The user ID of the person renting the property
-    transaction_renter_id = db.Column(
-        db.Integer, nullable=False)
-    # The user id of the person who owns the property
-    transaction_owner_id = db.Column(
+    # The user ID of the user renting the property
+    user_id = db.Column(
         db.Integer, nullable=False)
     # The ID of the listing being booked
-    transaction_listing_id = db.Column(
+    listing_id = db.Column(
         db.Integer, nullable=False)
 
     def __repr__(self):
-        return '<Transaction %r>' % self.transaction_id
+        return '<Booking %r>' % self.id
 
 
 class Review(db.Model):
@@ -103,20 +103,16 @@ class Review(db.Model):
     '''
     # Unique ID of review
     # -> Primary key of the table
-    review_id = db.Column(db.Integer, primary_key=True)
-    # Review message
-    review_message = db.Column(db.String(140), unique=False, nullable=False)
-    # Date of review creation
-    review_date = db.Column(
-        db.DateTime(timezone=True), unique=False, nullable=False)
-    # Review score
-    review_score = db.Column(db.Float(), unique=False, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
     # ID of the user that made the review
-    review_user_id = db.Column(db.Integer, unique=False, nullable=False)
-    # Transaction ID that the review belong to
-    review_transaction_id = db.Column(db.Integer, unique=False, nullable=False)
+    user_id = db.Column(db.Integer, unique=False, nullable=False)
     # Listing ID that the review belong to
-    review_listing_id = db.Column(db.Integer, unique=False, nullable=False)
+    listing_id = db.Column(db.Integer, unique=False, nullable=False)
+    # Review message
+    review_text = db.Column(db.String(1000), unique=False, nullable=False)
+    # Date of review creation
+    date = db.Column(
+        db.DateTime(timezone=True), unique=False, nullable=False)
 
     def __repr__(self):
         return '<Review %r>' % self.review_id
