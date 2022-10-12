@@ -525,7 +525,7 @@ def update_listing(id, name, description, price, email):
     if (date < datetime(2021, 1, 2) or date > datetime(2025, 1, 2)):
         return
     # Get the user_id that corresponds to the user_email
-    query = User.query.filter_by(email=email).first()
+    query = User.query.filter_by(id=id).first()
     user_id = query.owner_id
     # Update listing
     listing = Listing(id=id, name=name, price=price, description=description,
@@ -533,4 +533,4 @@ def update_listing(id, name, description, price, email):
     db.session.update(listing)
     db.session.commit()
     return True 
-    
+
