@@ -20,6 +20,6 @@ def pytest_sessionstart():
 def pytest_sessionfinish():
     '''
     Optional function called when testing is done.
-    Do nothing for now
+    Do nothing for now.
     '''
     pass
