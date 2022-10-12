@@ -146,7 +146,9 @@ def register(username, email, password):
     if not verify_password(password):
         return None
     # getting largest ID in the database so far
+    # initialising max_id as 0 for first ever User in database
     max_id = 0
+    # query for maximum value in id column
     results = db.session.query(db.func.max(User.id))
     for row in results:
         if row[0] is not None:
@@ -156,7 +158,7 @@ def register(username, email, password):
     # R1-10: Balance initialised as 100 at registration
     new_user = User(username=username, email=email, password=password, 
                     billing_address="", postal_code="", balance=100, 
-                    id=(max_id + 1))
+                    id=(max_id + 1))  # increments max_id by 1 for uniqueness
     db.session.add(new_user)
     try:
         db.session.commit()
@@ -207,6 +209,7 @@ def verify_email(email):
         print(str(e))
         return False
     # R1-7: Cannot be duplicate
+    # queries for all records where email is the same as potential user's
     duplicates = User.query.filter_by(email=email).all()
     if len(duplicates) > 0:
         print("duplicates found")
