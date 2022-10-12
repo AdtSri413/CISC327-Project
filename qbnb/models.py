@@ -17,23 +17,23 @@ class User(db.Model):
     # Unique ID of the user
     # -> primary key of the model
     id = db.Column(db.Integer, primary_key=True)
-    
+
     # Email Address of the user
     # -> must be unique since one email can only open one account
     email = db.Column(db.String(120), unique=True, nullable=False)
 
     # Password of the user's account -> doesn't have to be unique
     password = db.Column(db.String(120), unique=False, nullable=False)
-    
+
     # Username of the user's account -> must be unique to identify each account
     username = db.Column(db.String(120), unique=True, nullable=False)
-    
+
     # Billing Address
     billing_address = db.Column(db.String(120), unique=False, nullable=False)
 
     # Postal Code
     postal_code = db.Column(db.String(120), unique=False, nullable=False)
-    
+
     # Account Balance
     balance = db.Column(db.Float, unique=False, nullable=False)
 
@@ -124,6 +124,7 @@ db.create_all()
 
 
 # Put Assignment 2 functions here
+
 def register(username, email, password):
     '''
     Check register parameters
@@ -151,8 +152,8 @@ def register(username, email, password):
     # R1-8: Billing address is empty at registration
     # R1-9: Postal code is empty at registration
     # R1-10: Balance initialised as 100 at registration
-    new_user = User(username=username, email=email, password=password, 
-                    billing_address="", postal_code="", balance=100, 
+    new_user = User(username=username, email=email, password=password,
+                    billing_address="", postal_code="", balance=100,
                     id=(max_id + 1))  # increments max_id by 1 for uniqueness
     db.session.add(new_user)
     try:
@@ -161,7 +162,31 @@ def register(username, email, password):
         # re-activates session if error detected while committing
         db.session.rollback()
     return new_user
-    
+
+
+def login(email, password):
+    '''
+    Check login parameters
+        Parameters:
+            email (string):    user email
+            password (string): user password
+        Returns:
+            The user object if login succeeded otherwise None
+    '''
+
+    # Email and password should meet the required specification
+    if not verify_email_login(email):
+        return None
+
+    if not verify_password(password):
+        return None
+
+    # Check database to see to see if email and password match
+    valids = User.query.filter_by(email=email, password=password).all()
+    if len(valids) != 1:
+        return None
+    return valids[0]
+
 
 def verify_username(username):
     '''
@@ -210,7 +235,7 @@ def verify_email(email):
         print("duplicates found")
         return False
     return True
-    
+
 
 def verify_password(password):
     '''
@@ -223,22 +248,48 @@ def verify_password(password):
     # R1-1: Cannot be empty.
     if password is None or password == "":
         return False
-    
+
     # R1-4: Minimum length 6
     if len(password) <= 6:
         return False
-    
+
     # R1-4: At least one special character
     special_characters = " !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
     if not any(c in special_characters for c in password):
         return False
-    
+
     # R1-4: At least one lower case
     if not any(c.islower() for c in password):
         return False
-    
+
     # R1-4: At least one upper case
     if not any(c.isupper() for c in password):
         return False
-    
+
+    return True
+
+
+def verify_email_login(email):
+    '''
+    Helper function to validate email
+        Parameters:
+            email (string): user email
+        Returns:
+            True if email is valid, otherwise False
+    '''
+    # R1-1: Cannot be empty
+    if email is None or email == "":
+        return False
+
+    # R1-3: Must follow RFC 5322 specifications
+    try:
+        validate_email(email, check_deliverability=False)
+    except EmailNotValidError as e:
+        print(str(e))
+        return False
+
+    # Email must exist in database
+    valids = User.query.filter_by(email=email).all()
+    if len(valids) != 1:
+        return False
     return True
