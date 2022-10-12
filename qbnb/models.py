@@ -505,8 +505,8 @@ def update_listing(id, name, description, price, email):
     if not (price in range(10, 10001)):
         return
     # Check if price has increased
-    query = Listing.query.filter_by(id=id).first()
-    if query.price > price:
+    listing = Listing.query.filter_by(name=name).first()
+    if listing.price > price:
         return
     # Owner email cannot be empty
     if email is None or email == "":
