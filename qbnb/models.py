@@ -532,4 +532,5 @@ def update_listing(id, name, description, price, email):
                       owner_id=user_id, last_modified_date=date)
     db.session.update(listing)
     db.session.commit()
-    return True
+    return True 
+    
