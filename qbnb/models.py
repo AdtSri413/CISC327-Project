@@ -68,7 +68,10 @@ class Listing(db.Model):
 
     def __repr__(self):
         return '<Listing %r>' % self.name
-
+    
+    def __lt__(self, other):
+        return self.price < other.price
+    
 
 class Transaction(db.Model):
     '''
@@ -127,7 +130,7 @@ class Review(db.Model):
 
     def __repr__(self):
         return '<Review %r>' % self.review_id
-
+    
 
 # create all tables
 db.create_all()
@@ -502,7 +505,7 @@ def update_listing(id, name, description, price, email):
     if not (price in range(10, 10001)):
         return
     # Check if price has increased
-    if price < Listing.query.filter_by(price=price).first():
+    if price < Listing.price:
         return
     # Owner email cannot be empty
     if email is None or email == "":
