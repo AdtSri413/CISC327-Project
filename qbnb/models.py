@@ -503,6 +503,7 @@ def update_listing(id, name, description, price, email):
         return
     # Check if price has increased
     price_list = Listing.query.filter_by(price=price).all()
+    print(price_list)
     for p in price_list:
         if price < int(p):
             return
