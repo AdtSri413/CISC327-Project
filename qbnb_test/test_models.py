@@ -410,7 +410,7 @@ def test_r5_1_update_listing():
 
     updated_listing = Listing.query.filter_by(name='new name').first()
     test_description = 'New description of listing'
-    assert (update_listing.id == 101) is True
+    assert (updated_listing.id == 101) is True
     assert (updated_listing.name == 'new name') is True
     assert (updated_listing.description == test_description) is True
     assert (updated_listing.price == 100) is True
