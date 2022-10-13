@@ -53,9 +53,6 @@ class Listing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # Name of the listing
     name = db.Column(db.String(80), unique=True, nullable=False)
-    # Address of the listing
-    # -> must be unique since one address can only have one listing
-    address = db.Column(db.String(120), unique=True, nullable=True)
     # Daily price of the listing
     price = db.Column(db.Float, unique=False, nullable=False)
     # Listing description
@@ -67,10 +64,7 @@ class Listing(db.Model):
     last_modified_date = db.Column(db.DateTime, unique=False, nullable=False)
 
     def __repr__(self):
-        return '<Listing %r>' % self.name
-    
-    def __lt__(self, other):
-        return self.price < other.price
+        return '<Listing %r>' % self.id
     
 
 class Transaction(db.Model):
@@ -472,65 +466,56 @@ def create_listing(title, description, price, date, email):
     return True
 
 
-def update_listing(id, name, description, price, email):
+def update_listing(id, old_name, new_name, description, price):
     '''
     Description: Update Listing
         Parameters:
-            id (Integer): Listing ID
-            name (String): Listing Name
-            price (String): Listing Price
-            description (String): Listing Description
-            email (String): User Email
+            id (int): listing id
+            old_name (string): old listing name
+            new_name (string): updated listing name
+            price (string): Listing Price
+            description (string): Listing Description
         Returns:
             True if product update succeeded otherwise False
     '''
     # Check if name contains only alphanumeric chars and spaces
-    if not name.replace(" ", "").isalnum():
-        return
+    if not new_name.replace(" ", "").isalnum():
+        return False
     # Check if name starts or ends with a space
-    if (name.startswith(' ') or
-            name.endswith(' ')):
-        return
+    if (new_name.startswith(' ') or
+            new_name.endswith(' ')):
+        return False
     # Check the length of name
-    if len(name) > 80:
-        return
+    if len(new_name) > 80:
+        return False
+    # Check if new listing name is uniqe
+    if not old_name == new_name:
+        name_exists = Listing.query.filter_by(name=new_name).all()
+        if len(name_exists) > 0:
+            return False
     # Check the length of description
     if (len(description) > 2000 or
             len(description) < 20):
-        return
+        return False
     # Check if the description is longer than the name
-    if len(description) <= len(name):
-        return
+    if len(description) <= len(new_name):
+        return False
     # Check if the price is in the correct range
     if not (price in range(10, 10001)):
-        return
+        return False
     # Check if price has increased
-    listing = Listing.query.filter_by(name=name).first()
-    if listing.price > price:
-        return
-    # Owner email cannot be empty
-    if email is None or email == "":
-        return
-    # Check if email is a valid email address
-    if len(User.query.filter_by(email=email).all()) == 0:
-        return
-    # Check if user created a listing with a name that already 
-    # exists
-    if name in Listing.query.filter_by(name=name).all():
-        return
+    listing = Listing.query.filter_by(name=old_name).first()
+    if (listing.price > price):
+        return False
+    # Update listing
+    listing.id = id
+    listing.name = new_name
+    listing.price = price
+    listing.description = description
     # Update date when update operation is successful
     date = datetime.now()
-    # Check last_modified_date must be after 2021-01-02 and before
-    # 2025-01-02
-    if (date < datetime(2021, 1, 2) or date > datetime(2025, 1, 2)):
-        return
-    # Get the user_id that corresponds to the user_email
-    query = User.query.filter_by(email=email).first()
-    user_id = query.owner_id
-    # Update listing
-    listing = Listing(id=id, name=name, price=price, description=description,
-                      owner_id=user_id, last_modified_date=date)
-    db.session.update(listing)
+    listing.last_modified_date = date
+    # Save changes to database
     db.session.commit()
     return True 
 
