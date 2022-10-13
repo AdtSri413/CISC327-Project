@@ -405,7 +405,7 @@ def test_r5_1_update_listing():
         'old name', 'Ex description of listing',
         1000, '2022-10-05', 'test0@test.com')
     assert update_listing(
-        100, 'old name', 'new name', 'New description of listing', 100) \
+        100, 'old name', 'new name', 'New description of listing', 1001) \
         is True
 
     updated_listing = Listing.query.filter_by(name='new name').first()
@@ -421,7 +421,7 @@ def test_r5_2_update_listing():
     '''
 
     assert update_listing(
-        111, 'Listing 1', 'new name 2', 'Ex description of listing', 1000) \
+        111, 'Listing 1', 'new name 2', 'Ex description of listing', 1002) \
         is True
     assert update_listing(
         111, 'Listing 1', 'new name 3', 'Ex description of listing', 900) \
