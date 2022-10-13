@@ -402,7 +402,7 @@ def test_r5_1_update_listing():
     owner_id and the last_modified_date
     '''
     create_listing(
-        'Ex title R4 1 1', 'Ex description of listing',
+        'old name', 'Ex description of listing',
         1000, '2022-10-05', 'test0@test.com')
     assert update_listing(
         100, 'old name', 'new name', 'New description of listing', 100) \
@@ -436,7 +436,7 @@ def test_r5_3_update_listing():
     Testing R5-3: The last modified date must be correct
     '''
     updated_listing = Listing.query.filter_by(name='new name').first()
-    today = datetime.date.today()
+    today = datetime.today()
     assert (updated_listing.last_modified_date == today) is True
 
 
