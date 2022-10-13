@@ -516,14 +516,15 @@ def update_listing(id, old_name, new_name, description, price,
     # Get the user_id that corresponds to the user_email
     query = User.query.filter_by(email=email).first()
     user_id = query.id
+    # Delete the old listing
+    db.session.delete(listing)
+    db.session.commit()
     # Update listing
-    listing.id = id
-    listing.name = new_name
-    listing.description = description
-    listing.price = price
-    listing.owner_id = user_id
-    # Update date when update operation is successful
-    listing.last_modified_date = datetime.today()
+    listing = Listing(id=id, name=new_name, description=description,
+                      price=price, last_modified_date=datetime.today(),
+                      owner_id=user_id)
+    # add listing to the current database session
+    db.session.add(listing)
     # Save changes to database
     db.session.commit()
     return True 
