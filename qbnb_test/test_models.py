@@ -405,11 +405,12 @@ def test_r5_1_update_listing():
         'old name', 'Ex description of listing',
         1000, '2022-10-05', 'test0@test.com')
     assert update_listing(
-        100, 'old name', 'new name', 'New description of listing', 1001) \
+        101, 'old name', 'new name', 'New description of listing', 1001) \
         is True
 
     updated_listing = Listing.query.filter_by(name='new name').first()
     test_description = 'New description of listing'
+    assert (update_listing.id == 101) is True
     assert (updated_listing.name == 'new name') is True
     assert (updated_listing.description == test_description) is True
     assert (updated_listing.price == 100) is True
@@ -435,7 +436,7 @@ def test_r5_3_update_listing():
     '''
     Testing R5-3: The last modified date must be correct
     '''
-    updated_listing = Listing.query.filter_by(name='new name').first()
+    updated_listing = Listing.query.filter_by(name='new name 4').first()
     today = datetime.today()
     assert (updated_listing.last_modified_date == today) is True
 
