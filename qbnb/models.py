@@ -488,7 +488,11 @@ def update_listing(id, old_name, new_name, description, price):
     # Check the length of name
     if len(new_name) > 80:
         return False
-    # Check if new listing name is uniqe
+    # Check if old listing name exists
+    name_exists = Listing.query.filter_by(name=old_name).all()
+    if len(name_exists) == 0:
+        return False
+    # Check if new listing name is unique
     if not old_name == new_name:
         name_exists = Listing.query.filter_by(name=new_name).all()
         if len(name_exists) > 0:
