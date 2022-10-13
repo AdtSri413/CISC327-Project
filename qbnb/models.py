@@ -466,15 +466,16 @@ def create_listing(title, description, price, date, email):
     return True
 
 
-def update_listing(id, old_name, new_name, description, price):
+def update_listing(id, old_name, new_name, description, price, 
+                   email='example@example.com'):
     '''
     Description: Update Listing
         Parameters:
             id (int): listing id
             old_name (string): old listing name
             new_name (string): updated listing name
+            description (string): updated listing description
             price (string): Listing Price
-            description (string): Listing Description
         Returns:
             True if product update succeeded otherwise False
     '''
@@ -493,7 +494,7 @@ def update_listing(id, old_name, new_name, description, price):
     if len(name_exists) == 0:
         return False
     # Check if new listing name is unique
-    if not old_name == new_name:
+    if not (old_name == new_name):
         name_exists = Listing.query.filter_by(name=new_name).all()
         if len(name_exists) > 0:
             return False
@@ -511,14 +512,17 @@ def update_listing(id, old_name, new_name, description, price):
     listing = Listing.query.filter_by(name=old_name).first()
     if (listing.price > price):
         return False
+    # Get the user_id that corresponds to the user_email
+    query = User.query.filter_by(email=email).first()
+    user_id = query.id
     # Update listing
     listing.id = id
     listing.name = new_name
-    listing.price = price
     listing.description = description
+    listing.price = price
+    listing.owner_id = user_id
     # Update date when update operation is successful
-    date = datetime.now()
-    listing.last_modified_date = date
+    listing.last_modified_date = datetime.today()
     # Save changes to database
     db.session.commit()
     return True 
