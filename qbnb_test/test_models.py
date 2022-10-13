@@ -421,13 +421,13 @@ def test_r5_2_update_listing():
     '''
 
     assert update_listing(
-        111, 'Listing 1', 'new name 2' 'Ex description of listing', 1000) \
+        111, 'Listing 1', 'new name 2', 'Ex description of listing', 1000) \
         is True
     assert update_listing(
-        111, 'Listing 1', 'new name 3' 'Ex description of listing', 900) \
+        111, 'Listing 1', 'new name 3', 'Ex description of listing', 900) \
         is False
     assert update_listing(
-        111, 'Listing 1', 'new name 4' 'Ex description of listing', 1100) \
+        111, 'Listing 1', 'new name 4', 'Ex description of listing', 1100) \
         is True
 
 
