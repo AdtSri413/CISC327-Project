@@ -467,7 +467,7 @@ def create_listing(title, description, price, date, email):
 
 
 def update_listing(id, old_name, new_name, description, price, 
-                   email='example@example.com'):
+                   email='test0@test.com'):
     '''
     Description: Update Listing
         Parameters:
@@ -476,6 +476,7 @@ def update_listing(id, old_name, new_name, description, price,
             new_name (string): updated listing name
             description (string): updated listing description
             price (string): Listing Price
+            email (string): user email
         Returns:
             True if product update succeeded otherwise False
     '''

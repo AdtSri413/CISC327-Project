@@ -422,13 +422,13 @@ def test_r5_2_update_listing():
     '''
 
     assert update_listing(
-        111, 'Listing 1', 'new name 2', 'Ex description of listing', 1002) \
+        111, 'new name', 'new name 2', 'Ex description of listing', 1002) \
         is True
     assert update_listing(
-        111, 'Listing 1', 'new name 3', 'Ex description of listing', 900) \
+        111, 'new name 2', 'new name 3', 'Ex description of listing', 900) \
         is False
     assert update_listing(
-        111, 'Listing 1', 'new name 4', 'Ex description of listing', 1100) \
+        111, 'new name 2', 'new name 4', 'Ex description of listing', 1100) \
         is True
 
 
@@ -448,31 +448,31 @@ def test_r5_4_update_listing():
     # The name of the listing has to be alphanumeric-only (aside from
     # non-starting or ending spaces)
     assert update_listing(
-        111, 'Listing 1', '%^!^7s', 'Ex description of listing',
+        111, 'new name 4', '%^!^7s', 'Ex description of listing',
         1200) is False
     # The name of the listing cannot start or end with a space
     assert update_listing(
-        111, 'Listing 1', ' anirudh ', 'Ex description of listing', 1300) \
+        111, 'new name 4', ' anirudh ', 'Ex description of listing', 1300) \
         is False
     # The length of the name cannot be longer than 80 characters
     assert update_listing(
-        111, 'Listing 1', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+        111, 'new name 4', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
         'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 
         'Listing descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
         'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
         1400) is False
     # The new listing name must be unique
     assert update_listing(
-        111, 'Listing 1', 'Listing 1', 'Ex description of listing', 1500) \
+        111, 'new name 4', 'new name 4', 'Ex description of listing', 1500) \
         is False
     # The description of the listing must be between 20 - 2000
     # characters
     assert update_listing(
-        111, 'Listing 1', 'new name 5', 'b', 1600) is False
+        111, 'new name 4', 'new name 5', 'b', 1600) is False
     # Description must be longer than title
     assert update_listing(
-        111, 'Listing 1', 'new name 6', 'short', 1700) is False
+        111, 'new name 4', 'new name 6', 'short', 1700) is False
     # Price must be between 10 - 10000 (inclusive)
     assert update_listing(
-        111, 'Listing 1', 'new name 7', 'Ex description of listing', 11000) \
+        111, 'new name 4', 'new name 7', 'Ex description of listing', 11000) \
         is False
