@@ -1,3 +1,8 @@
+'''
+Test code for qbnb/models.py (Assignment 1 models and assignment 2 functions)
+'''
+
+
 from qbnb.models import register, create_listing, login, update_user, \
     update_listing, Listing
 from datetime import datetime
@@ -442,40 +447,3 @@ def test_r5_3_update_listing():
     today = datetime.today().strftime('%Y-%m-%d')
     assert (updated_listing.last_modified_date.strftime('%Y-%m-%d') 
             == today) is True
-
-
-def test_r5_4_update_listing():
-    '''
-    Testing R5-4: Testing all relevant R4 requirements
-    '''
-    # The name of the listing has to be alphanumeric-only (aside from
-    # non-starting or ending spaces)
-    assert update_listing(
-        111, 'new name 4', '%^!^7s', 'Ex description of listing',
-        1200) is False
-    # The name of the listing cannot start or end with a space
-    assert update_listing(
-        111, 'new name 4', ' anirudh ', 'Ex description of listing', 1300) \
-        is False
-    # The length of the name cannot be longer than 80 characters
-    assert update_listing(
-        111, 'new name 4', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 
-        'Listing descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        1400) is False
-    # The new listing name must be unique
-    assert update_listing(
-        111, 'new name', 'new name', 'Ex description of listing', 1500) \
-        is False
-    # The description of the listing must be between 20 - 2000
-    # characters
-    assert update_listing(
-        111, 'new name 4', 'new name 5', 'b', 1600) is False
-    # Description must be longer than title
-    assert update_listing(
-        111, 'new name 4', 'new name 6', 'short', 1700) is False
-    # Price must be between 10 - 10000 (inclusive)
-    assert update_listing(
-        111, 'new name 4', 'new name 7', 'Ex description of listing', 11000) \
-        is False
