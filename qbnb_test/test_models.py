@@ -2,7 +2,10 @@
 Test code for qbnb/models.py (Assignment 1 models and assignment 2 functions)
 '''
 
-from qbnb.models import register, create_listing, login, update_user
+
+from qbnb.models import register, create_listing, login, update_user, \
+    update_listing, Listing
+from datetime import datetime
 
 
 # R1-1: Email cannot be empty. password cannot be empty.
@@ -396,3 +399,88 @@ def test_r3_4_update_user():
     # Supplied username should be less than 20 characters
     user = update_user(user_id=1, username="abcdefghijklmnopqrstu")
     assert user is None
+
+
+def test_r5_1_update_listing():
+    '''
+    Testing R5-1: Can update all attributes of a listing except the
+    owner_id and the last_modified_date
+    '''
+    register(
+        username="user 0", email="test0@test.com", password="Test123?")
+    create_listing(
+        'old name', 'Ex description of listing',
+        1000, '2022-10-05', 'test0@test.com')
+    assert update_listing(
+        101, 'old name', 'new name', 'New description of listing', 1001) \
+        is True
+
+    updated_listing = Listing.query.filter_by(name='new name').first()
+    test_description = 'New description of listing'
+    assert (updated_listing.id == 101) is True
+    assert (updated_listing.name == 'new name') is True
+    assert (updated_listing.description == test_description) is True
+    assert (updated_listing.price == 1001) is True
+
+
+def test_r5_2_update_listing():
+    '''
+    Testing R5-2: The price can only increase
+    '''
+
+    assert update_listing(
+        111, 'new name', 'new name 2', 'Ex description of listing', 1002) \
+        is True
+    assert update_listing(
+        111, 'new name 2', 'new name 3', 'Ex description of listing', 900) \
+        is False
+    assert update_listing(
+        111, 'new name 2', 'new name 4', 'Ex description of listing', 1100) \
+        is True
+
+
+def test_r5_3_update_listing():
+    '''
+    Testing R5-3: The last modified date must be correct
+    '''
+    updated_listing = Listing.query.filter_by(name='new name 4').first()
+    today = datetime.today().strftime('%Y-%m-%d')
+    assert (updated_listing.last_modified_date.strftime('%Y-%m-%d') 
+            == today) is True
+
+
+def test_r5_4_update_listing():
+    '''
+    Testing R5-4: Testing all relevant R4 requirements
+    '''
+    # The name of the listing has to be alphanumeric-only (aside from
+    # non-starting or ending spaces)
+    assert update_listing(
+        111, 'new name 4', '%^!^7s', 'Ex description of listing',
+        1200) is False
+    # The name of the listing cannot start or end with a space
+    assert update_listing(
+        111, 'new name 4', ' anirudh ', 'Ex description of listing', 1300) \
+        is False
+    # The length of the name cannot be longer than 80 characters
+    assert update_listing(
+        111, 'new name 4', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 
+        'Listing descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        1400) is False
+    # The new listing name must be unique
+    assert update_listing(
+        111, 'new name', 'new name', 'Ex description of listing', 1500) \
+        is False
+    # The description of the listing must be between 20 - 2000
+    # characters
+    assert update_listing(
+        111, 'new name 4', 'new name 5', 'b', 1600) is False
+    # Description must be longer than title
+    assert update_listing(
+        111, 'new name 4', 'new name 6', 'short', 1700) is False
+    # Price must be between 10 - 10000 (inclusive)
+    assert update_listing(
+        111, 'new name 4', 'new name 7', 'Ex description of listing', 11000) \
+        is False

@@ -53,9 +53,6 @@ class Listing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # Name of the listing
     name = db.Column(db.String(80), unique=True, nullable=False)
-    # Address of the listing
-    # -> must be unique since one address can only have one listing
-    address = db.Column(db.String(120), unique=True, nullable=True)
     # Daily price of the listing
     price = db.Column(db.Float, unique=False, nullable=False)
     # Listing description
@@ -67,8 +64,8 @@ class Listing(db.Model):
     last_modified_date = db.Column(db.DateTime, unique=False, nullable=False)
 
     def __repr__(self):
-        return '<Listing %r>' % self.listing_name
-
+        return '<Listing %r>' % self.id
+    
 
 class Booking(db.Model):
     '''
@@ -120,7 +117,7 @@ class Review(db.Model):
 
     def __repr__(self):
         return '<Review %r>' % self.review_id
-
+    
 
 # create all tables
 db.create_all()
@@ -459,3 +456,69 @@ def create_listing(title, description, price, date, email):
     db.session.commit()
 
     return True
+
+
+def update_listing(id, old_name, new_name, description, price, 
+                   email='test0@test.com'):
+    '''
+    Description: Update Listing
+        Parameters:
+            id (int): listing id
+            old_name (string): old listing name
+            new_name (string): updated listing name
+            description (string): updated listing description
+            price (string): Listing Price
+            email (string): user email
+        Returns:
+            True if product update succeeded otherwise False
+    '''
+    # Check if name contains only alphanumeric chars and spaces
+    if not new_name.replace(" ", "").isalnum():
+        return False
+    # Check if name starts or ends with a space
+    if (new_name.startswith(' ') or
+            new_name.endswith(' ')):
+        return False
+    # Check the length of name
+    if len(new_name) > 80:
+        return False
+    # Check if old listing name exists
+    name_exists = Listing.query.filter_by(name=old_name).all()
+    if len(name_exists) == 0:
+        return False
+    # Check if new listing name is unique
+    if not (old_name == new_name):
+        name_exists = Listing.query.filter_by(name=new_name).all()
+        if len(name_exists) > 0:
+            return False
+    # Check the length of description
+    if (len(description) > 2000 or
+            len(description) < 20):
+        return False
+    # Check if the description is longer than the name
+    if len(description) <= len(new_name):
+        return False
+    # Check if the price is in the correct range
+    if not (price in range(10, 10001)):
+        return False
+    # Check if price has increased
+    listing = Listing.query.filter_by(name=old_name).first()
+    if (listing.price > price):
+        return False
+    # Get the user_id that corresponds to the user_email
+    query = User.query.filter_by(email=email).first()
+    user_id = query.id
+    # Delete the old listing
+    db.session.delete(listing)
+    db.session.commit()
+    # Update listing
+    today = datetime.today()
+    listing = Listing(id=id, name=new_name, description=description,
+                      price=price, last_modified_date=today, 
+                      owner_id=user_id)
+    # add listing to the current database session
+    db.session.add(listing)
+    # Save changes to database
+    db.session.commit()
+    return True 
+
