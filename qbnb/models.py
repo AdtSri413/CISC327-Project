@@ -397,10 +397,6 @@ def create_listing(title, description, price, date, email):
         print("ERROR: Price too high")
         return False
 
-    # Put date in datetime format (set time to arbitrary 12pm)
-    date += " 12:00:00"
-    date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
-
     # Define first and last possible day for last modified date
     first = datetime.strptime("2021-01-02 23:59:59", '%Y-%m-%d %H:%M:%S')
     last = datetime.strptime("2025-01-02 00:00:00", '%Y-%m-%d %H:%M:%S')
@@ -510,9 +506,10 @@ def update_listing(old_name, new_name, description, price,
     db.session.delete(listing)
     db.session.commit()
     # Update listing
-    today = datetime.today()
+
+    date = datetime.now()
     listing = Listing(id=listing_id, name=new_name, description=description,
-                      price=price, last_modified_date=today,
+                      price=price, last_modified_date=date, 
                       owner_id=user_id)
     # add listing to the current database session
     db.session.add(listing)

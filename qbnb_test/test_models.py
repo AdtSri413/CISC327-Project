@@ -124,19 +124,19 @@ def test_r4_1_create_listing():
 
     assert create_listing(
         'Ex title R4 1 1', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is True
+        1000, datetime.now(), 'test0@test.com') is True
 
     assert create_listing(
         ' Ex title R4 1 2', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is False
+        1000, datetime.now(), 'test0@test.com') is False
 
     assert create_listing(
         'Ex title R4 1 3 ', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is False
+        1000, datetime.now(), 'test0@test.com') is False
 
     assert create_listing(
         'Ex title R4-1 4', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is False
+        1000, datetime.now(), 'test0@test.com') is False
 
 
 def test_r4_2_create_listing():
@@ -147,7 +147,7 @@ def test_r4_2_create_listing():
 
     assert create_listing(
         'Ex title R4 2 1', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is True
+        1000, datetime.now(), 'test0@test.com') is True
 
     assert create_listing(
         '4 bedroom 4 bathroom house on the water comes with outdoor \
@@ -155,7 +155,7 @@ def test_r4_2_create_listing():
         'beautiful large house on the water. perfect for your vacation needs. \
             Enjoy a gorgeous outdoor heated pool during your stay.',
         1000,
-        '2022-10-05',
+        datetime.now(),
         'test0@test.com') is False
 
 
@@ -167,14 +167,14 @@ def test_r4_3_create_listing():
 
     assert create_listing(
         'Ex title R4 3 1', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is True
+        1000, datetime.now(), 'test0@test.com') is True
 
     assert create_listing(
         'Ex title R4 3 2', 'Ex description',
-        1000, '2022-10-05', 'test0@test.com') is False
+        1000, datetime.now(), 'test0@test.com') is False
 
     assert create_listing(
-        'Ex title R4 3 3', 'x' * 2001, 1000, '2022-10-05', 'test0@test.com') \
+        'Ex title R4 3 3', 'x' * 2001, 1000, datetime.now(), 'test0@test.com')\
         is False
 
 
@@ -186,11 +186,11 @@ def test_r4_4_create_listing():
 
     assert create_listing(
         'Ex title R4 4 1', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is True
+        1000, datetime.now(), 'test0@test.com') is True
 
     assert create_listing(
         'Ex title R4 4 2', 'Ex desc',
-        1000, '2022-10-05', 'test0@test.com') is False
+        1000, datetime.now(), 'test0@test.com') is False
 
 
 def test_r4_5_create_listing():
@@ -201,15 +201,15 @@ def test_r4_5_create_listing():
 
     assert create_listing(
         'Ex title R4 5 1', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is True
+        1000, datetime.now(), 'test0@test.com') is True
 
     assert create_listing(
         'Ex title R4 5 2', 'Ex description of listing',
-        9, '2022-10-05', 'test0@test.com') is False
+        9, datetime.now(), 'test0@test.com') is False
 
     assert create_listing(
         'Ex title R4 5 3', 'Ex description of listing',
-        10001, '2022-10-05', 'test0@test.com') is False
+        10001, datetime.now(), 'test0@test.com') is False
 
 
 def test_r4_6_create_listing():
@@ -220,15 +220,17 @@ def test_r4_6_create_listing():
 
     assert create_listing(
         'Ex title R4 6 1', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is True
+        1000, datetime.now(), 'test0@test.com') is True
 
     assert create_listing(
         'Ex title R4 6 2', 'Ex description of listing',
-        1000, '2021-01-01', 'test0@test.com') is False
+        1000, datetime.strptime("2021-01-01 23:59:59", '%Y-%m-%d %H:%M:%S'), 
+        'test0@test.com') is False
 
     assert create_listing(
         'Ex title R4 6 3', 'Ex description of listing',
-        1000, '2025-01-03', 'test0@test.com') is False
+        1000, datetime.strptime("2025-01-03 00:00:00", '%Y-%m-%d %H:%M:%S'), 
+        'test0@test.com') is False
 
 
 def test_r4_7_create_listing():
@@ -239,19 +241,19 @@ def test_r4_7_create_listing():
 
     assert create_listing(
         'Ex title R4 7 1', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is True
+        1000, datetime.now(), 'test0@test.com') is True
 
     assert create_listing(
         'Ex title R4 7 2', 'Ex description of listing',
-        1000, '2022-10-05', None) is False
+        1000, datetime.now(), None) is False
 
     assert create_listing(
         'Ex title R4 7 3', 'Ex description of listing',
-        1000, '2022-10-05', '') is False
+        1000, datetime.now(), '') is False
 
     assert create_listing(
         'Ex title R4 7 4', 'Ex description of listing',
-        1000, '2022-10-05', 'nottest0@test.com') is False
+        1000, datetime.now(), 'nottest0@test.com') is False
 
 
 def test_r4_8_create_listing():
@@ -261,11 +263,11 @@ def test_r4_8_create_listing():
     '''
     assert create_listing(
         'Ex title R4 8', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is True
+        1000, datetime.now(), 'test0@test.com') is True
 
     assert create_listing(
         'Ex title R4 8', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com') is False
+        1000, datetime.now(), 'test0@test.com') is False
 
 
 def test_r2_1_login():
@@ -410,7 +412,7 @@ def test_r5_1_update_listing():
         username="user 0", email="test0@test.com", password="Test123?")
     create_listing(
         'old name', 'Ex description of listing',
-        1000, '2022-10-05', 'test0@test.com')
+        1000, datetime.now(), 'test0@test.com')
     assert update_listing(
         'old name', 'new name', 'New description of listing', 1001) \
         is True
