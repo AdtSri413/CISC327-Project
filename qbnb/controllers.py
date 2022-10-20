@@ -26,13 +26,16 @@ def authenticate(inner_function):
         # check did we store the key in the session
         if 'logged_in' in session:
             email = session['logged_in']
+            print(f"user tried to log in with {email}")
             try:
                 user = User.query.filter_by(email=email).one_or_none()
                 if user:
                     # if the user exists, call the inner_function
                     # with user as parameter
+                    print("user found in database")
                     return inner_function(user)
             except Exception:
+                print("exception yoyo")
                 pass
         else:
             # else, redirect to the login page
@@ -82,7 +85,7 @@ def home(user):
     # by using @authenticate, we don't need to re-write
     # the login checking code all the time for other
     # front-end portals
-
+    print("entered home code")
     # the user's listings
     complete_listings = Listing.query.filter_by(owner_id=user.id).all()
     print(complete_listings)
