@@ -2,6 +2,7 @@ from flask import render_template, request, session, redirect
 from qbnb.models import User, Listing, Booking, Review
 from qbnb.models import \
     register, login, update_user, create_listing, update_listing
+from datetime import datetime
 
 
 from qbnb import app
@@ -78,12 +79,19 @@ def home(user):
     # the login checking code all the time for other
     # front-end portals
 
-    # some fake product data
-    products = [
-        {'name': 'prodcut 1', 'price': 10},
-        {'name': 'prodcut 2', 'price': 20}
-    ]
-    return render_template('index.html', user=user, products=products)
+    # the user's listings
+    complete_listings = Listing.query.filter_by(owner_id=user.id).all()
+    print(complete_listings)
+    if len(complete_listings) > 0:
+        listings = []
+        for i in complete_listings:
+            listings.append({"name": i.name, "description": i.description, 
+                            "price": f"${i.price}", "edit": "Edit"})
+    else:
+        listings = [{"name": "No listings yet!", "description": "", 
+                    "price": "", "edit": ""}]
+
+    return render_template('index.html', user=user, listings=listings)
 
 
 @app.route('/register', methods=['GET'])
@@ -120,3 +128,32 @@ def logout():
     if 'logged_in' in session:
         session.pop('logged_in', None)
     return redirect('/')
+
+
+@app.route('/create_listing')
+def create_listing_get():
+    if 'logged_in' in session:
+        return render_template('create_listing.html',
+                               user=session['logged_in'], message="")
+
+
+@app.route('/create_listing', methods=['POST'])
+def create_listing_post():
+    if 'logged_in' in session:
+        title = request.form.get('title')
+        description = request.form.get('description')
+        price = request.form.get('price')
+        error_message = None
+
+        # use backend api to create the listing
+        success = create_listing(title, description, int(price), 
+                                 datetime.now(), session["logged_in"])
+        if not success:
+            error_message = "Could not create listing."
+        # if there is any error messages when creating a new listing
+        # at the backend, stay on create_listing page
+        if error_message:
+            return render_template('create_listing.html', 
+                                   message=error_message)
+        else:
+            return redirect('/', code=303)

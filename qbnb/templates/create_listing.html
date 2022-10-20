@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Create a New Listing{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<h2 id="header">Create a New Listing!</h2>
+<h4 id='message'>{{message}}</h4>
+
+<!--To fix textarea borders -->
+<style>
+    textarea.form-control{
+        border: 1px solid #2b3553;
+        border-radius: .4285rem;
+    }
+
+    textarea.form-control:focus{
+        border: 1px solid #e14eca ;
+        border-radius: .4285rem;
+    }
+</style>
+
+<div class="form-group">
+    <form method="post">
+        <label for="title">Title</label>
+        <input class="form-control" name="title" id="title" maxlength=80 required>
+        <label for="description">Description</label>
+        <textarea class="form-control" name="description" id="description" minLength=20 maxlength=2000 required></textarea>
+        <label for="price">Price</label>
+        <input class="form-control" type="number" name="price" id="price" min=10 max=10000 required>
+        <input class="btn btn-primary" type="submit" value="Create">
+    </form>
+</div>
+{% endblock %}
