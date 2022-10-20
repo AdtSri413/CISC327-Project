@@ -10,3 +10,6 @@ flake8 --select=E .
 // cd to project directory
 cd CISC327-Project
 pytest -s qbnb_test
+
+# To run the development server:
+python3 -m qbnb

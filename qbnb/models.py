@@ -123,8 +123,6 @@ class Review(db.Model):
 db.create_all()
 
 
-# Put Assignment 2 functions here
-
 def register(username, email, password):
     '''
     Check register parameters
