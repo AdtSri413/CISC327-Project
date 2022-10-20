@@ -105,6 +105,8 @@ def register_post():
     else:
         # use backend api to register the user
         success = register(name, email, password)
+        # if user obj returned, success
+        # if None returned, failure
         if not success:
             error_message = "Registration failed."
     # if there is any error messages when registering new user
