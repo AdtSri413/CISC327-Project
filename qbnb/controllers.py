@@ -145,7 +145,7 @@ def create_listing_post():
         price = request.form.get('price')
         error_message = None
 
-        # use backend api to register the user
+        # use backend api to create the listing
         success = create_listing(title, description, int(price), 
                                  datetime.now(), session["logged_in"])
         if not success:
