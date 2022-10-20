@@ -16,7 +16,7 @@
         <h3><b>{{ listing.name }}</b></h3>
         <h4>{{ listing.description }}</h4>
         <h4><b>{{ listing.price }}</b></h4>
-        <a href='/update_listing'>{{ listing.edit }}</a> <!-- Link this to the update listing page -->
+        <a href="/update_listing/{{ listing.name }}">{{ listing.edit }}</a> <!-- Link this to the update listing page -->
     </div>
     <br>
     {% endfor %}
