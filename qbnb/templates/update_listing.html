@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<h4 id='message'>Update Listing {{old_name}}</h4>
+<h4 id='message'>{{message}}</h4>
+<form action="{{url_for('update_listing_post',old_name=old_name)}}" method="post">
+  <div class="form-group">
+    <label for="name">Listing Name</label>
+    <input class="form-control" name="name" id="name" required>
+    <label for="price">Price</label>
+    <input class="form-control" name="price" id="price" required>
+    <label for="description">Description</label>
+    <input class="form-control" name="description" id="description" required>
+    <input class="btn btn-primary" type="submit" value="Update">
+  </div>
+</form>
+{% endblock %}

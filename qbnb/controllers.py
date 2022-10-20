@@ -130,6 +130,43 @@ def logout():
     return redirect('/')
 
 
+@app.route('/update_listing/<string:old_name>', methods=['Get'])
+def update_listing_get(old_name):
+    # print(session)
+    return render_template('update_listing.html',
+                           old_name=old_name, message="")
+
+
+# Find a way to past Updatelisting into the main page
+@app.route('/update_listing/<string:old_name>', methods=['Post'])
+def update_listing_post(old_name):
+    try:
+        email = session['logged_in']
+        new_name = request.form.get('name')
+        price = int(request.form.get('price'))
+        description = request.form.get('description')
+        error_message = ""
+    except Exception:
+        error_message = "Please ensure all fields are populated correctly"
+        return render_template('update_listing.html',
+                               old_name=old_name,
+                               message=error_message)
+
+    # Use backend function to update listing
+    success = update_listing(old_name, new_name, description, price, email)
+
+    if not success:
+        error_message = "Could not update listing"
+    # if there is any error messages when updating a listing
+    # at the backend, stay on update_listing page
+    if error_message:
+        return render_template('update_listing.html',
+                               old_name=old_name, message=error_message)
+
+    else:
+        return redirect('/', code=303)
+
+
 @app.route('/create_listing')
 def create_listing_get():
     if 'logged_in' in session:
@@ -157,3 +194,4 @@ def create_listing_post():
                                    message=error_message)
         else:
             return redirect('/', code=303)
+
