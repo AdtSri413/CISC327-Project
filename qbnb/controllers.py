@@ -94,6 +94,7 @@ def register_get():
 
 @app.route('/register', methods=['POST'])
 def register_post():
+    # references using "name" value in HTML element
     email = request.form.get('email')
     name = request.form.get('name')
     password = request.form.get('password')
