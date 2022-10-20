@@ -65,7 +65,7 @@ class Listing(db.Model):
 
     def __repr__(self):
         return '<Listing %r>' % self.id
-    
+
 
 class Booking(db.Model):
     '''
@@ -117,7 +117,7 @@ class Review(db.Model):
 
     def __repr__(self):
         return '<Review %r>' % self.review_id
-    
+
 
 # create all tables
 db.create_all()
@@ -456,12 +456,11 @@ def create_listing(title, description, price, date, email):
     return True
 
 
-def update_listing(id, old_name, new_name, description, price, 
+def update_listing(old_name, new_name, description, price,
                    email='test0@test.com'):
     '''
-    Description: Update Listing
+    Description: Update Listing (Updates name, description and price)
         Parameters:
-            id (int): listing id
             old_name (string): old listing name
             new_name (string): updated listing name
             description (string): updated listing description
@@ -501,6 +500,7 @@ def update_listing(id, old_name, new_name, description, price,
         return False
     # Check if price has increased
     listing = Listing.query.filter_by(name=old_name).first()
+    listing_id = listing.id
     if (listing.price > price):
         return False
     # Get the user_id that corresponds to the user_email
@@ -511,12 +511,11 @@ def update_listing(id, old_name, new_name, description, price,
     db.session.commit()
     # Update listing
     today = datetime.today()
-    listing = Listing(id=id, name=new_name, description=description,
-                      price=price, last_modified_date=today, 
+    listing = Listing(id=listing_id, name=new_name, description=description,
+                      price=price, last_modified_date=today,
                       owner_id=user_id)
     # add listing to the current database session
     db.session.add(listing)
     # Save changes to database
     db.session.commit()
-    return True 
-
+    return True
