@@ -41,6 +41,7 @@ def authenticate(inner_function):
     # return the wrapped version of the inner_function:
     return wrapped_inner
 
+
 @app.route('/')
 def redirect_to_login():
     return redirect('/login', code=303)
