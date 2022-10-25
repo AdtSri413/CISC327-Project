@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Update User{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<h4 id='message'>Update User {{old_name}}</h4>
+<h4 id='message'>{{message}}</h4>
+<form action="{{url_for('update_use_post',old_name=old_name)}}" method="post">
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input class="form-control" name="email" id="email" value="{{user.email}}" required>
+    <label for="name">Name</label>
+    <input class="form-control" name="name" id="name" value="{{user.name}}" required>
+    <label for="password">Password</label>
+    <input class="form-control" type="password" name="password" id="password" required>
+    <label for="password">Confirm Password</label>
+    <input class="form-control" type="password" name="password2" id="password2" required>
+    <input class="btn btn-primary" type="submit" value="Update">
+  </div>
