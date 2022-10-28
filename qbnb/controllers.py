@@ -36,10 +36,15 @@ def authenticate(inner_function):
                 pass
         else:
             # else, redirect to the login page
-            return redirect('/login')
+            return redirect('/login', code=303)
 
     # return the wrapped version of the inner_function:
     return wrapped_inner
+
+
+@app.route('/')
+def redirect_to_login():
+    return redirect('/login', code=303)
 
 
 @app.route('/login', methods=['GET'])
@@ -65,12 +70,12 @@ def login_post():
         """
         # success! go back to the home page
         # code 303 is to force a 'GET' request
-        return redirect('/', code=303)
+        return redirect('/home', code=303)
     else:
         return render_template('login.html', message='login failed')
 
 
-@app.route('/')
+@app.route('/home')
 @authenticate
 def home(user):
     # authentication is done in the wrapper function
@@ -78,10 +83,8 @@ def home(user):
     # by using @authenticate, we don't need to re-write
     # the login checking code all the time for other
     # front-end portals
-
     # the user's listings
     complete_listings = Listing.query.filter_by(owner_id=user.id).all()
-    print(complete_listings)
     if len(complete_listings) > 0:
         listings = []
         for i in complete_listings:
@@ -120,14 +123,14 @@ def register_post():
     if error_message:
         return render_template('register.html', message=error_message)
     else:
-        return redirect('/login')
+        return redirect('/home')
 
 
 @app.route('/logout')
 def logout():
     if 'logged_in' in session:
         session.pop('logged_in', None)
-    return redirect('/')
+    return redirect('/login', code=303)
 
 
 @app.route('/update_listing/<string:old_name>', methods=['Get'])
@@ -162,9 +165,8 @@ def update_listing_post(old_name):
     if error_message:
         return render_template('update_listing.html',
                                old_name=old_name, message=error_message)
-
     else:
-        return redirect('/', code=303)
+        return redirect('/home')
 
 
 @app.route('/create_listing')
@@ -193,5 +195,5 @@ def create_listing_post():
             return render_template('create_listing.html', 
                                    message=error_message)
         else:
-            return redirect('/', code=303)
+            return redirect('/home', code=303)
 
