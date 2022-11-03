@@ -230,5 +230,6 @@ def update_user_post(old_name):
                                old_name=old_name, message=error_message)
 
     else:
-        session['logged_in'] = email 
+        user = User.query.filter_by(id=user.id).first()
+        session['logged_in'] = user.email
         return redirect('/home', code=303)
