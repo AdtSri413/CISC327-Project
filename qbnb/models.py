@@ -202,19 +202,19 @@ def update_user(user_id, username=None, email=None, billing_address=None,
     toggle = 0
 
     user = User.query.filter_by(id=user_id).first()
-    if username is not None and username != " ":
+    if username is not None and username != "":
         if not verify_username(username):
             return None
         user.username = username
 
-    if email is not None and email != " ":
+    if email is not None and email != "":
         if not verify_email(email):
             return None
         user.email = email
-    if billing_address is not None and billing_address != " ":
+    if billing_address is not None and billing_address != "":
         user.billing_address = billing_address
 
-    if postal_code is not None and postal_code != " ":
+    if postal_code is not None and postal_code != "":
         if not postal_code_validation(postal_code):
             return None
         user.postal_code = postal_code
