@@ -7,15 +7,17 @@
 {% block content %}
 <h4 id='message'>Update User {{old_name}}</h4>
 <h4 id='message'>{{message}}</h4>
-<form action="{{url_for('update_use_post',old_name=old_name)}}" method="post">
+<form action="{{url_for('update_user_post',old_name=old_name)}}" method="post">
   <div class="form-group">
-    <label for="email">Email</label>
-    <input class="form-control" name="email" id="email" value="{{user.email}}" required>
     <label for="name">Name</label>
-    <input class="form-control" name="name" id="name" value="{{user.name}}" required>
-    <label for="password">Password</label>
-    <input class="form-control" type="password" name="password" id="password" required>
-    <label for="password">Confirm Password</label>
-    <input class="form-control" type="password" name="password2" id="password2" required>
+    <input class="form-control" name="name" id="name" required>
+    <label for="email">Email</label>
+    <input class="form-control" name="email" id="email" required>
+    <label for="billing_address">Billing Address</label>
+    <input class="form-control" name="billing_address" id="billing_address" required>
+    <label for="postal_code">Postal Code</label>
+    <input class="form-control" name="postal_code" id="postal_code" required>
     <input class="btn btn-primary" type="submit" value="Update">
   </div>
+</form>
+{% endblock %}

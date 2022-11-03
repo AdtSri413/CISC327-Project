@@ -205,10 +205,10 @@ def update_user_get(old_name):
 @app.route('/update_user/<string:old_name>', methods=['POST'])
 def update_user_post(old_name):
     try:
-        new_name = request.form.get('name')
+        username = request.form.get('name')
         email = request.form.get('email')
-        password = request.form.get('password')
-        password2 = request.form.get('password2')
+        billing_address = request.form.get('billing_address')
+        postal_code = request.form.get('postal_code')
         error_message = ""
     except Exception:
         error_message = "Please ensure all fields are populated correctly"
@@ -217,7 +217,9 @@ def update_user_post(old_name):
                                message=error_message)
 
     # Use backend function to update user
-    success = update_user(old_name, new_name, email, password, password2)
+    user = User.query.filter_by(username=old_name).first()
+    success = update_user(user.id, username, email, billing_address, 
+                          postal_code)
 
     if not success:
         error_message = "Could not update user"
@@ -228,4 +230,4 @@ def update_user_post(old_name):
                                old_name=old_name, message=error_message)
 
     else:
-        return redirect('/', code=303)
+        return redirect('/home', code=303)
