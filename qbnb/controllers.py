@@ -218,6 +218,7 @@ def update_user_post(old_name):
 
     # Use backend function to update user
     user = User.query.filter_by(username=old_name).first()
+    # Test
     success = update_user(user.id, username, email, billing_address, 
                           postal_code)
 
@@ -230,4 +231,5 @@ def update_user_post(old_name):
                                old_name=old_name, message=error_message)
 
     else:
+        session['logged_in'] = email 
         return redirect('/home', code=303)
