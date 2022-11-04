@@ -38,7 +38,7 @@ class ServerThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         # import necessary routes
-        from qbay import controllers
+        from qbnb import controllers
         self.srv = make_server('127.0.0.1', 8081, app)
         self.ctx = app.app_context()
         self.ctx.push()
