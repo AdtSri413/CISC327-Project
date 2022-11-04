@@ -197,3 +197,41 @@ def create_listing_post():
         else:
             return redirect('/home', code=303)
 
+
+@app.route('/update_user/<string:old_name>', methods=['Get'])
+def update_user_get(old_name):
+    return render_template('update_user.html',
+                           old_name=old_name, message="")
+
+
+@app.route('/update_user/<string:old_name>', methods=['POST'])
+def update_user_post(old_name):
+    try:
+        username = request.form.get('name')
+        email = request.form.get('email')
+        billing_address = request.form.get('billing_address')
+        postal_code = request.form.get('postal_code')
+        error_message = ""
+    except Exception:
+        error_message = "Please ensure all fields are populated correctly"
+        return render_template('update_user.html',
+                               old_name=old_name,
+                               message=error_message)
+
+    # Use backend function to update user
+    user = User.query.filter_by(username=old_name).first()
+    success = update_user(user.id, username, email, billing_address, 
+                          postal_code)
+
+    if not success:
+        error_message = "Could not update user"
+    # if there is any error messages when updating a user
+    # at the backend, stay on update_user page
+    if error_message:
+        return render_template('update_user.html',
+                               old_name=old_name, message=error_message)
+
+    else:
+        user = User.query.filter_by(id=user.id).first()
+        session['logged_in'] = user.email
+        return redirect('/home', code=303)
