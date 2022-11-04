@@ -206,22 +206,30 @@ def update_user(user_id, username=None, email=None, billing_address=None,
         if not verify_username(username):
             return None
         user.username = username
+        toggle=1
 
     if email is not None and email != "":
         if not verify_email(email):
             return None
         user.email = email
+        toggle=1
+
     if billing_address is not None and billing_address != "":
         user.billing_address = billing_address
+        toggle=1
 
     if postal_code is not None and postal_code != "":
         if not postal_code_validation(postal_code):
             return None
         user.postal_code = postal_code
+        toggle=1
 
-    db.session.commit()
 
-    return user
+    if toggle==1:
+        db.session.commit()
+        return user
+    else:
+        return None
 
 
 def verify_username(username):
