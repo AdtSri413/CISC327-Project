@@ -206,26 +206,25 @@ def update_user(user_id, username=None, email=None, billing_address=None,
         if not verify_username(username):
             return None
         user.username = username
-        toggle=1
+        toggle = 1
 
     if email is not None and email != "":
         if not verify_email(email):
             return None
         user.email = email
-        toggle=1
+        toggle = 1
 
     if billing_address is not None and billing_address != "":
         user.billing_address = billing_address
-        toggle=1
+        toggle = 1
 
     if postal_code is not None and postal_code != "":
         if not postal_code_validation(postal_code):
             return None
         user.postal_code = postal_code
-        toggle=1
+        toggle = 1
 
-
-    if toggle==1:
+    if toggle == 1:
         db.session.commit()
         return user
     else:
@@ -515,7 +514,7 @@ def update_listing(old_name, new_name, description, price,
 
     date = datetime.now()
     listing = Listing(id=listing_id, name=new_name, description=description,
-                      price=price, last_modified_date=date, 
+                      price=price, last_modified_date=date,
                       owner_id=user_id)
     # add listing to the current database session
     db.session.add(listing)
