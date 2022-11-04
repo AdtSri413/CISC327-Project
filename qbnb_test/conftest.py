@@ -29,6 +29,7 @@ def pytest_sessionfinish():
     '''
     pass
 
+
 base_url = 'http://127.0.0.1:{}'.format(8081)
 
 
