@@ -8,6 +8,7 @@ from qbnb.models import User
 This file defines all integration tests for the frontend homepage.
 """
 
+
 class FrontEndRegistrationTest(BaseCase):
     '''
     Utilises BOUNDARY TESTING to test the limits of registration details.
@@ -27,6 +28,7 @@ class FrontEndRegistrationTest(BaseCase):
         # should display registration page with failure message
         self.assert_element("#message")
         self.assert_text("Registration failed.", "#message")
+    
     def test_password_length_2(self, *_):
         # open registration page
         self.open(base_url + '/register')
@@ -42,6 +44,7 @@ class FrontEndRegistrationTest(BaseCase):
         # should display home page with welcome message
         self.assert_element("#welcome-header")
         self.assert_text("Welcome, test001!", "#welcome-header")
+    
     def test_username_length_1(self, *_):
         # open registration page
         self.open(base_url + '/register')
@@ -57,6 +60,7 @@ class FrontEndRegistrationTest(BaseCase):
         # should display register page with failure message
         self.assert_element("#message")
         self.assert_text("Registration failed.", "#message")
+    
     def test_username_length_2(self, *_):
         # open registration page
         self.open(base_url + '/register')
@@ -72,6 +76,7 @@ class FrontEndRegistrationTest(BaseCase):
         # should display register page with failure message
         self.assert_element("#message")
         self.assert_text("Registration failed.", "#message")
+    
     def test_username_length_3(self, *_):
         # open registration page
         self.open(base_url + '/register')
@@ -87,6 +92,7 @@ class FrontEndRegistrationTest(BaseCase):
         # should display home page with welcome message
         self.assert_element("#welcome-header")
         self.assert_text("Welcome, t02", "#welcome-header")
+    
     def test_username_length_4(self, *_):
         # open registration page
         self.open(base_url + '/register')

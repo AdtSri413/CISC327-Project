@@ -128,7 +128,7 @@ def register_post():
             session['logged_in'] = user.email
             return redirect('/home', code=303)
         else:
-            render_template('register.html', message = "login failed")
+            render_template('register.html', message="login failed")
 
 
 @app.route('/logout')
