@@ -293,7 +293,7 @@ def verify_password(password):
         return False
 
     # R1-4: Minimum length 6
-    if len(password) <= 6:
+    if len(password) < 6:
         return False
 
     # R1-4: At least one special character
