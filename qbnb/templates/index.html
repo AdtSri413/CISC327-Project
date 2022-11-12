@@ -12,10 +12,10 @@
 
 <div id="listings">
     {% for listing in listings %}
-    <div class="border rounded" style="padding: 20px;">
-        <h3><b>{{ listing.name }}</b></h3>
-        <h4>{{ listing.description }}</h4>
-        <h4><b>{{ listing.price }}</b></h4>
+    <div class="border rounded" id="listing" style="padding: 20px;">
+        <h3 id="title"><b>{{ listing.name }}</b></h3>
+        <h4 id="description">{{ listing.description }}</h4>
+        <h4 id="price"><b>{{ listing.price }}</b></h4>
         <a href="/update_listing/{{ listing.name }}">{{ listing.edit }}</a> <!-- Link this to the update listing page -->
     </div>
     <br>
