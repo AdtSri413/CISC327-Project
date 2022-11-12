@@ -9,33 +9,102 @@ This file defines all integration tests for the frontend homepage.
 """
 
 
-class FrontEndHomePageTest(BaseCase):
-
-    def test_login_success(self, *_):
-        """
-        This is a sample front end unit test to login to home page
-        and verify if the tickets are correctly listed.
-        """
-        # open login page
-        self.open(base_url + '/login')
-        # fill email and password
-        self.type("#email", "test0@test.com")
-        self.type("#password", "123456")
-        # click enter button
+class FrontEndRegistrationTest(BaseCase):
+    '''
+    Utilises BOUNDARY TESTING to test the limits of registration details.
+    '''
+    def test_password_length_1(self, *_):
+        # open registration page
+        self.open(base_url + '/register')
+        # valid email and name
+        self.type("#email", "test000@test.com")
+        self.type("#name", "test000")
+        # invalid password (below minimum requirement of 6 characters)
+        self.type("#password", "Te0!")
+        self.type("#password2", "Te0!")
+        # submit registration form
         self.click('input[type="submit"]')
-
-        # after clicking on the browser (the line above)
-        # the front-end code is activated
-        # and tries to call get_user function.
-        # The get_user function is supposed to read data from database
-        # and return the value. However, here we only want to test the
-        # front-end, without running the backend logics.
-        # so we patch the backend to return a specific user instance,
-        # rather than running that program. (see @ annotations above)
-
-        # open home page
-        self.open(base_url)
-        # test if the page loads correctly
+        # test should fail
+        # should display registration page with failure message
+        self.assert_element("#message")
+        self.assert_text("Registration failed.", "#message")
+    
+    def test_password_length_2(self, *_):
+        # open registration page
+        self.open(base_url + '/register')
+        # valid email and name
+        self.type("#email", "test001@test.com")
+        self.type("#name", "test001")
+        # valid password (exactly minimum requirement of 6 characters)
+        self.type("#password", "Test1!")
+        self.type("#password2", "Test1!")
+        # submit registration form
+        self.click('input[type="submit"]')
+        # test should pass
+        # should display home page with welcome message
         self.assert_element("#welcome-header")
-        self.assert_text("Welcome u0 !", "#welcome-header")
-        # other available APIs
+        self.assert_text("Welcome, test001!", "#welcome-header")
+    
+    def test_username_length_1(self, *_):
+        # open registration page
+        self.open(base_url + '/register')
+        # valid email and password
+        self.type("#email", "test002@test.com")
+        self.type("#password", "Test2!")
+        self.type("#password2", "Test2!")
+        # invalid username (exactly 2 characters)
+        self.type("#name", "t2")
+        # submit registration form
+        self.click('input[type="submit"]')
+        # test should fail
+        # should display register page with failure message
+        self.assert_element("#message")
+        self.assert_text("Registration failed.", "#message")
+    
+    def test_username_length_2(self, *_):
+        # open registration page
+        self.open(base_url + '/register')
+        # valid email and password
+        self.type("#email", "test002@test.com")
+        self.type("#password", "Test2!")
+        self.type("#password2", "Test2!")
+        # invalid username (exactly 20 characters)
+        self.type("#name", "12345678901234567890")
+        # submit registration form
+        self.click('input[type="submit"]')
+        # test should fail
+        # should display register page with failure message
+        self.assert_element("#message")
+        self.assert_text("Registration failed.", "#message")
+    
+    def test_username_length_3(self, *_):
+        # open registration page
+        self.open(base_url + '/register')
+        # valid email and password
+        self.type("#email", "test002@test.com")
+        self.type("#password", "Test2!")
+        self.type("#password2", "Test2!")
+        # valid username (just more than 2 characters)
+        self.type("#name", "t02")
+        # submit registration form
+        self.click('input[type="submit"]')
+        # test should pass
+        # should display home page with welcome message
+        self.assert_element("#welcome-header")
+        self.assert_text("Welcome, t02", "#welcome-header")
+    
+    def test_username_length_4(self, *_):
+        # open registration page
+        self.open(base_url + '/register')
+        # valid email and password
+        self.type("#email", "test003@test.com")
+        self.type("#password", "Test3!")
+        self.type("#password2", "Test3!")
+        # valid username (just below 20 characters)
+        self.type("#name", "1234567890123456789")
+        # submit registration form
+        self.click('input[type="submit"]')
+        # test should pass
+        # should display home page with welcome message
+        self.assert_element("#welcome-header")
+        self.assert_text("Welcome, 1234567890123456789", "#welcome-header")
