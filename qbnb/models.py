@@ -395,6 +395,9 @@ def create_listing(title, description, price, date, email):
         return False
 
     # R4-5: Make sure the price is in the range [10-10000]
+    if type(price) is not int:
+        print("ERROR: Price must be an integer.")
+        return False
     if price < 10:
         print("ERROR: Price too low")
         return False
@@ -407,6 +410,9 @@ def create_listing(title, description, price, date, email):
     last = datetime.strptime("2025-01-02 00:00:00", '%Y-%m-%d %H:%M:%S')
 
     # R4-6: Last modified date must be between 2021-01-02 and 2025-01-02
+    if type(date) is not datetime:
+        print("ERROR: Date must be a datetime object.")
+        return False
     if first > date or date > last:
         print("ERROR: Invalid last modified date")
         return False
