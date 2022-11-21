@@ -2,29 +2,45 @@
 
 ## Aditi
 
-### what is the branch he/she worked on (has to be pushed to the repo).
+### what is the branch he/she worked on
 
-### what is the progress so far (at least some test cases written, more than 2)
+feature/PROJ-500/Aditi/sql-injections-register-function
+
+### what is the progress so far
+
+Committed my changes and waiting on approvals
 
 ### any difficulties?
 
+Wasn't 100% sure on what to do in the beginning. All is good now though.
+
 ### what is the plan for the days before the deadline.
+
+Get approvals for my code and merge.
 
 
 ## Anirudh
 
-### what is the branch he/she worked on (has to be pushed to the repo).
+### what is the branch he/she worked on
 
-### what is the progress so far (at least some test cases written, more than 2)
+feature/PROJ-501/Anirudh/sql-injections-create-listing-function
+
+### what is the progress so far
+
+Finished test cases
 
 ### any difficulties?
 
+No difficulties. Tests ran smoothly.
+
 ### what is the plan for the days before the deadline.
+
+Get PR approved. Approve everyone else's PRs.
 
 
 ## Malthus
 
-### what is the branch he/she worked on (has to be pushed to the repo).
+### what is the branch he/she worked on
 
 feature/Shawn-Malthus/PROJ-503/Deploying the web application
 
@@ -43,7 +59,7 @@ Create the docker images for the group application and deploy to docker hub with
 
 ## Shawn
 
-### what is the branch he/she worked on (has to be pushed to the repo).
+### what is the branch he/she worked on
 
 feature/Shawn-Malthus/PROJ-503/Deploying the web application
 
