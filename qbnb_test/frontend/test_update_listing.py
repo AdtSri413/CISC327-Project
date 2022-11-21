@@ -143,7 +143,7 @@ class UpdateListingPageTest(BaseCase):
         # test if update listing has failed
         self.assert_text("Could not update listing")
 
-    def test_price_decrease(self, *_):
+    def test_price_increase(self, *_):
         # open login page
         self.open(base_url + '/login')
         # fill email and password
