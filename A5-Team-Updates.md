@@ -1,4 +1,4 @@
-# Team Updates - Wednesday, November 9th, 2022
+# Team Updates - Sunday, November 20th, 2022
 
 ## Aditi
 
@@ -14,32 +14,47 @@
 ## Anirudh
 
 ### what is the branch he/she worked on (has to be pushed to the repo).
-feature/PROJ-501/Anirudh/sql-injections-create-listing-function
 
 ### what is the progress so far (at least some test cases written, more than 2)
-Finished test cases
+
 ### any difficulties?
-No difficulties. Tests ran smoothly.
+
 ### what is the plan for the days before the deadline.
-Get PR approved. Approve everyone else's PRs.
+
 
 ## Malthus
 
 ### what is the branch he/she worked on (has to be pushed to the repo).
 
-### what is the progress so far (at least some test cases written, more than 2)
+feature/Shawn-Malthus/PROJ-503/Deploying the web application
+
+### what is the progress so far
+
+Research on how to create docker images and deploy to docker hub with Malthus
 
 ### any difficulties?
 
+Not so far
+
 ### what is the plan for the days before the deadline.
+
+Create the docker images for the group application and deploy to docker hub with Malthus
 
 
 ## Shawn
 
 ### what is the branch he/she worked on (has to be pushed to the repo).
 
-### what is the progress so far (at least some test cases written, more than 2)
+feature/Shawn-Malthus/PROJ-503/Deploying the web application
 
-### any difficulties.
+### what is the progress so far
+
+Research on how to create docker images and deploy to docker hub with Malthus
+
+### any difficulties?
+
+Not so far
 
 ### what is the plan for the days before the deadline.
+
+Create the docker images for the group application and deploy to docker hub with Malthus
