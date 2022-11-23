@@ -4,3 +4,4 @@ pytest
 flake8
 email_validator
 seleniumbase
+pymysql
