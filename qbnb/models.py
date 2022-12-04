@@ -530,8 +530,6 @@ def update_listing(old_name, new_name, description, price,
 
 
 def book_listing(listing_name, start_date, end_date, user_name):
-    print()
-
     # Check that the user exists
     user = User.query.filter_by(username=user_name).first()
     if user is None or user == "":
@@ -546,12 +544,12 @@ def book_listing(listing_name, start_date, end_date, user_name):
 
     # check that the start date is after now
     now = datetime.now()
-    if start_date < now:
+    if start_date.day < now.day:
         print("BOOK LISTING ERROR: Start date is in the past")
         return False
 
     # check that the end date is after the start date
-    if end_date <= start_date:
+    if end_date.day <= start_date.day:
         print("BOOK LISTING ERROR: End date should be after start date")
         return False
 
