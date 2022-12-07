@@ -527,3 +527,85 @@ def update_listing(old_name, new_name, description, price,
     # Save changes to database
     db.session.commit()
     return True
+
+
+def book_listing(listing_name, start_date, end_date, user_name):
+    # Check that the user exists
+    user = User.query.filter_by(username=user_name).first()
+    if user is None or user == "":
+        print("BOOK LISTING ERROR: User does not exist")
+        return False
+
+    # check that the listing exists
+    listing = Listing.query.filter_by(name=listing_name).first()
+    if listing is None or listing == "":
+        print("BOOK LISTING ERROR: Listing does not exist")
+        return False
+
+    # check that the start date is after now
+    now = datetime.now()
+    if start_date.day < now.day:
+        print("BOOK LISTING ERROR: Start date is in the past")
+        return False
+
+    # check that the end date is after the start date
+    if end_date.day <= start_date.day:
+        print("BOOK LISTING ERROR: End date should be after start date")
+        return False
+
+    # check that the owner and user names are not the same
+    owner_id = listing.owner_id
+
+    if user.id == owner_id:
+        print("BOOK LISTING ERROR: Cannot book own listing")
+        return False
+
+    # check that the user's balance equals or exceeds the listing price
+    if user.balance < listing.price:
+        print("BOOK LISTING ERROR: Insufficient balance")
+        return False
+
+    # check that the dates do not overlap with already booked dates
+    bookings = Booking.query.filter_by(listing_id=listing.id).all()
+    for b in bookings:
+        if start_date.day >= b.start.day and start_date.day <= b.end.day:
+            print("BOOK LISTING ERROR: Dates have already been booked")
+            return False
+        if end_date.day >= b.start.day and end_date.day <= b.end.day:
+            print("BOOK LISTING ERROR: Dates have already been booked")
+            return False
+
+    # Create new booking id
+
+    # get the largest id. Each id will be the previous largest id + 1
+    id = 0
+    booking_id = db.session.query(Booking.id)
+    # search for the largest id value that was returned from the query
+    for i in booking_id:
+        cur_id = i[0]
+        # If the current id is larger than id, set id to the current id
+        if id < cur_id:
+            id = cur_id
+
+    # Add 1 to id
+    id += 1
+
+    # Book listing
+    booking = Booking(id=id, date=now, start=start_date, end=end_date, 
+                      price=listing.price, user_id=user.id, 
+                      listing_id=listing.id)
+    # add booking to the current database session
+    db.session.add(booking)
+    # Save changes to database
+    db.session.commit()
+
+    # Remove money from user's balance
+    db.session.delete(user)
+    db.session.commit()
+    user = User(username=user.username, email=user.email, 
+                password=user.password, billing_address=user.billing_address, 
+                postal_code=user.postal_code, 
+                balance=(user.balance - listing.price), id=user.id)
+    db.session.add(user)
+    db.session.commit()
+    return True
