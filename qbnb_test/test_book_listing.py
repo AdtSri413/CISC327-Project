@@ -73,9 +73,9 @@ def test_book_listing_end_date():
                 print(f"Parameter {l} works as an end date")
 
 
-def test_book_listing_user_name():
+def test_book_listing_username():
     """
-    Test that the user_name parameter is sanitized
+    Test that the username parameter is sanitized
     """
     # Read sql injections
     with open("qbnb_test/sql_injection.txt", "r") as f:
@@ -92,4 +92,5 @@ def test_book_listing_user_name():
             # If book_listing does not return None, it means the sql
             # injection went through
             except (AssertionError):
-                print(f"Parameter {l} works as a user name")
+                print(f"Parameter {l} works as a username")
+    
