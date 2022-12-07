@@ -93,4 +93,3 @@ def test_book_listing_username():
             # injection went through
             except (AssertionError):
                 print(f"Parameter {l} works as a username")
-    
