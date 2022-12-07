@@ -4,7 +4,7 @@ Test code for qbnb/models.py (Assignment 1 models and assignment 2 functions)
 
 
 from qbnb.models import register, create_listing, login, update_user, \
-    update_listing, book_listing, Listing
+    update_listing, book_listing, Listing, User
 from datetime import datetime
 import datetime as dt
 
@@ -514,7 +514,12 @@ def test_r6_1_book_listing():
     end_date = today + dt.timedelta(days=3)  # 3 days from now
 
     assert book_listing(listing_name="Ex title R6 1", start_date=start_date, 
-                        end_date=end_date, user_name="user 6 1") is True
+                        end_date=end_date, username="user 6 1") is True
+    
+    # Check that the cost of the listing was deducted from the user's 
+    # balance properly
+    user = User.query.filter_by(username="user 6 1").first()
+    assert user.balance == 50
 
 
 def test_r6_2_book_listing():
@@ -544,11 +549,16 @@ def test_r6_2_book_listing():
 
     # Owner books own listing (should not allow)
     assert book_listing(listing_name="Ex title R6 2", start_date=start_date, 
-                        end_date=end_date, user_name="owner 6 2") is False
+                        end_date=end_date, username="owner 6 2") is False
 
     # User books owner's listing (should allow)
     assert book_listing(listing_name="Ex title R6 2", start_date=start_date, 
-                        end_date=end_date, user_name="user 6 2") is True
+                        end_date=end_date, username="user 6 2") is True
+
+    # Check that the cost of the listing was deducted from the user's 
+    # balance properly
+    user = User.query.filter_by(username="user 6 2").first()
+    assert user.balance == 50
 
 
 def test_r6_3_book_listing():
@@ -583,11 +593,16 @@ def test_r6_3_book_listing():
 
     # User books cheap listing (should allow)
     assert book_listing(listing_name="Ex title R6 3 1", start_date=start_date, 
-                        end_date=end_date, user_name="user 6 3") is True
+                        end_date=end_date, username="user 6 3") is True
 
     # User books expensive listing (should not allow)
     assert book_listing(listing_name="Ex title R6 3 2", start_date=start_date, 
-                        end_date=end_date, user_name="user 6 3") is False
+                        end_date=end_date, username="user 6 3") is False
+
+    # Check that the cost of the listing was deducted from the user's 
+    # balance properly
+    user = User.query.filter_by(username="user 6 3").first()
+    assert user.balance == 50
 
 
 def test_r6_4_book_listing():
@@ -619,11 +634,11 @@ def test_r6_4_book_listing():
 
     # User books listing (should allow)
     assert book_listing(listing_name="Ex title R6 4", start_date=start_date, 
-                        end_date=end_date, user_name="user 6 4") is True
+                        end_date=end_date, username="user 6 4") is True
 
     # User books listing for the same dates (should not allow)
     assert book_listing(listing_name="Ex title R6 4", start_date=start_date, 
-                        end_date=end_date, user_name="user 6 4") is False
+                        end_date=end_date, username="user 6 4") is False
 
     # Reset start and end dates such that they overlap with the original dates
     start_date += dt.timedelta(days=1)  # 2 days from now
@@ -631,4 +646,9 @@ def test_r6_4_book_listing():
 
     # User books listing for overlapping dates (should not allow)
     assert book_listing(listing_name="Ex title R6 4", start_date=start_date, 
-                        end_date=end_date, user_name="user 6 4") is False
+                        end_date=end_date, username="user 6 4") is False
+
+    # Check that the cost of the listing was deducted from the user's 
+    # balance properly
+    user = User.query.filter_by(username="user 6 4").first()
+    assert user.balance == 50
