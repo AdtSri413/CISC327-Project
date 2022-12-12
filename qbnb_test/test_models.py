@@ -4,8 +4,9 @@ Test code for qbnb/models.py (Assignment 1 models and assignment 2 functions)
 
 
 from qbnb.models import register, create_listing, login, update_user, \
-    update_listing, Listing
+    update_listing, book_listing, Listing, User
 from datetime import datetime
+import datetime as dt
 
 
 # R1-1: Email cannot be empty. password cannot be empty.
@@ -485,3 +486,169 @@ def test_r5_4_update_listing():
     assert update_listing(
         'new name 4', 'new name 7', 'Ex description of listing', 11000) \
         is False
+
+
+def test_r6_1_book_listing():
+    '''
+    Testing R6-1: A user can book a listing
+    '''
+
+    # Get todays date
+    today = datetime.now()
+
+    # Register the owner of the listing
+    register(username="owner 6 1", email="owner61@test.com",
+             password="Test123?")
+
+    # Register the user who will book the listing
+    register(username="user 6 1", email="user61@test.com",
+             password="Test123?")
+
+    # Create the listing and register it to the owner
+    create_listing(
+        'Ex title R6 1', 'Ex description of listing',
+        50, today, 'owner61@test.com')
+
+    # Set start and end dates of booking
+    start_date = today + dt.timedelta(days=1)  # 1 day from now
+    end_date = today + dt.timedelta(days=3)  # 3 days from now
+
+    assert book_listing(listing_name="Ex title R6 1", start_date=start_date, 
+                        end_date=end_date, username="user 6 1") is True
+    
+    # Check that the cost of the listing was deducted from the user's 
+    # balance properly
+    user = User.query.filter_by(username="user 6 1").first()
+    assert user.balance == 50
+
+
+def test_r6_2_book_listing():
+    '''
+    Testing R6-2: A user cannot book a listing for his/her listing
+    '''
+
+    # Get todays date
+    today = datetime.now()
+
+    # Register the user who will own the listing
+    register(username="owner 6 2", email="owner62@test.com",
+             password="Test123?")
+
+    # Register another user who will book the listing
+    register(username="user 6 2", email="user62@test.com",
+             password="Test123?")
+
+    # Create the listing and register it to the owner
+    create_listing(
+        'Ex title R6 2', 'Ex description of listing',
+        50, today, 'owner62@test.com')
+
+    # Set start and end dates of booking
+    start_date = today + dt.timedelta(days=1)  # 1 day from now
+    end_date = today + dt.timedelta(days=3)  # 3 days from now
+
+    # Owner books own listing (should not allow)
+    assert book_listing(listing_name="Ex title R6 2", start_date=start_date, 
+                        end_date=end_date, username="owner 6 2") is False
+
+    # User books owner's listing (should allow)
+    assert book_listing(listing_name="Ex title R6 2", start_date=start_date, 
+                        end_date=end_date, username="user 6 2") is True
+
+    # Check that the cost of the listing was deducted from the user's 
+    # balance properly
+    user = User.query.filter_by(username="user 6 2").first()
+    assert user.balance == 50
+
+
+def test_r6_3_book_listing():
+    '''
+    Testing R6-3: A user cannot book a listing for his/her listing
+    '''
+
+    # Get todays date
+    today = datetime.now()
+
+    # Register the user who will own the listing
+    register(username="owner 6 3", email="owner63@test.com",
+             password="Test123?")
+
+    # Register another user who will book the listing
+    register(username="user 6 3", email="user63@test.com",
+             password="Test123?")
+
+    # Create a cheap listing and register it to the owner
+    create_listing(
+        'Ex title R6 3 1', 'Ex description of listing',
+        50, today, 'owner63@test.com')
+
+    # Create an expensive listing and register it to the owner
+    create_listing(
+        'Ex title R6 3 2', 'Ex description of listing',
+        500, today, 'owner63@test.com')
+
+    # Set start and end dates of booking
+    start_date = today + dt.timedelta(days=1)  # 1 day from now
+    end_date = today + dt.timedelta(days=3)  # 3 days from now
+
+    # User books cheap listing (should allow)
+    assert book_listing(listing_name="Ex title R6 3 1", start_date=start_date, 
+                        end_date=end_date, username="user 6 3") is True
+
+    # User books expensive listing (should not allow)
+    assert book_listing(listing_name="Ex title R6 3 2", start_date=start_date, 
+                        end_date=end_date, username="user 6 3") is False
+
+    # Check that the cost of the listing was deducted from the user's 
+    # balance properly
+    user = User.query.filter_by(username="user 6 3").first()
+    assert user.balance == 50
+
+
+def test_r6_4_book_listing():
+
+    '''
+    Testing R6-4: A user cannot book a listing that is already booked with 
+    the overlapped dates
+    '''
+
+    # Get todays date
+    today = datetime.now()
+
+    # Register the user who will own the listing
+    register(username="owner 6 4", email="owner64@test.com",
+             password="Test123?")
+
+    # Register another user who will book the listing
+    register(username="user 6 4", email="user64@test.com",
+             password="Test123?")
+
+    # Create a listing and register it to the owner
+    create_listing(
+        'Ex title R6 4', 'Ex description of listing',
+        50, today, 'owner64@test.com')
+
+    # Set start and end dates of booking
+    start_date = today + dt.timedelta(days=1)  # 1 day from now
+    end_date = today + dt.timedelta(days=3)  # 3 days from now
+
+    # User books listing (should allow)
+    assert book_listing(listing_name="Ex title R6 4", start_date=start_date, 
+                        end_date=end_date, username="user 6 4") is True
+
+    # User books listing for the same dates (should not allow)
+    assert book_listing(listing_name="Ex title R6 4", start_date=start_date, 
+                        end_date=end_date, username="user 6 4") is False
+
+    # Reset start and end dates such that they overlap with the original dates
+    start_date += dt.timedelta(days=1)  # 2 days from now
+    end_date += dt.timedelta(days=1)  # 4 days from now
+
+    # User books listing for overlapping dates (should not allow)
+    assert book_listing(listing_name="Ex title R6 4", start_date=start_date, 
+                        end_date=end_date, username="user 6 4") is False
+
+    # Check that the cost of the listing was deducted from the user's 
+    # balance properly
+    user = User.query.filter_by(username="user 6 4").first()
+    assert user.balance == 50
