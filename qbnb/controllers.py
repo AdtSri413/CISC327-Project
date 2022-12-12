@@ -1,9 +1,9 @@
-from flask import render_template, request, session, redirect
+from flask import render_template, request, session, redirect, url_for
 from qbnb.models import User, Listing, Booking, Review
 from qbnb.models import \
-    register, login, update_user, create_listing, update_listing
+    register, login, update_user, create_listing, update_listing, book_listing
 from datetime import datetime
-
+from decimal import Decimal
 
 from qbnb import app
 
@@ -88,13 +88,29 @@ def home(user):
     if len(complete_listings) > 0:
         listings = []
         for i in complete_listings:
-            listings.append({"name": i.name, "description": i.description, 
+            listings.append({"name": i.name, "description": i.description,
                             "price": f"${i.price}", "edit": "Edit"})
     else:
-        listings = [{"name": "No listings yet!", "description": "", 
+        listings = [{"name": "No listings yet!", "description": "",
                     "price": "", "edit": ""}]
 
-    return render_template('index.html', user=user, listings=listings)
+    complete_bookings = Booking.query.filter_by(user_id=user.id).all()
+    if len(complete_bookings) > 0:
+        bookings = []
+        for i in complete_bookings:
+            listing = Listing.query.filter_by(id=i.listing_id).first()
+            bookings.append({
+                            "name": listing.name,
+                            "description": listing.description,
+                            "start": i.start,
+                            "end": i.end})
+    else:
+        bookings = [{"name": "No Bookings yet", "description": "",
+                     "start": "", "end": ""}]
+
+    return render_template(
+        'index.html', user=user, listings=listings, bookings=bookings
+    )
 
 
 @app.route('/register', methods=['GET'])
@@ -129,6 +145,65 @@ def register_post():
             return redirect('/home', code=303)
         else:
             render_template('register.html', message="login failed")
+
+
+@app.route(
+    "/make_booking/<int:id>"
+    "/<string:username>/<float:balance>/<int:insufficientBalance>"
+)
+def make_booking(id, username, balance, insufficientBalance):
+    complete_listings = Listing.query.filter(Listing.owner_id != id).all()
+    if len(complete_listings) > 0:
+        listings = []
+        for i in complete_listings:
+            listings.append({"name": i.name, "description": i.description,
+                            "price": f"${i.price}", "book": "Book"})
+    else:
+        listings = [{"name": "No available booking!", "description": "",
+                    "price": "", "edit": ""}]
+    if (insufficientBalance):
+        insBalMsg = "You have insufficient balance to book this listing"
+    else:
+        insBalMsg = ""
+    return render_template(
+        'make_booking.html', id=id, username=username,
+        listings=listings, balance=balance, insBalMsg=insBalMsg
+    )
+
+
+@app.route(
+    "/book/<string:username>/<string:title>/"
+    "<string:price>/<float:balance>/<int:id>",
+    methods=['Get']
+)
+def book_get(username, title, price, balance, id):
+    price_dec = Decimal(price.strip('$'))
+    if (price_dec > balance):
+        return redirect(url_for(
+            'make_booking', 
+            id=id, username=username, bal=balance, insBal=1)
+        )
+    else:
+        return render_template(
+            'booking_page.html', username=username, title=title
+        )
+
+
+@app.route('/book/<string:username>/<string:title>', methods=['Post'])
+def book_post(username, title):
+    format = '%Y-%m-%d'
+    start = datetime.strptime(request.form.get('start'), format)
+    end = datetime.strptime(request.form.get('end'), format)
+    success = book_listing(title, start, end, username)
+
+    if (success):
+        return redirect('/home', code=303)
+    else:
+        message = "Unable to make booking at specified dates"
+        return render_template(
+            'booking_page.html',
+            username=username, title=title, message=message
+        )
 
 
 @app.route('/logout')
@@ -190,14 +265,14 @@ def create_listing_post():
         error_message = None
 
         # use backend api to create the listing
-        success = create_listing(title, description, int(price), 
+        success = create_listing(title, description, int(price),
                                  datetime.now(), session["logged_in"])
         if not success:
             error_message = "Could not create listing."
         # if there is any error messages when creating a new listing
         # at the backend, stay on create_listing page
         if error_message:
-            return render_template('create_listing.html', 
+            return render_template('create_listing.html',
                                    message=error_message)
         else:
             return redirect('/home', code=303)
@@ -225,7 +300,7 @@ def update_user_post(old_name):
 
     # Use backend function to update user
     user = User.query.filter_by(username=old_name).first()
-    success = update_user(user.id, username, email, billing_address, 
+    success = update_user(user.id, username, email, billing_address,
                           postal_code)
 
     if not success:

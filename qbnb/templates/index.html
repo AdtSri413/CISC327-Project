@@ -26,6 +26,26 @@
     <a href='/create_listing' class="btn btn-primary" id="btn-submit" >Create Listing</a><br><br>
 </div>
 
+
+<h2>Here are all of your Bookings:</h2><br>
+
+<div id="bookings">
+    {% for booking in bookings %}
+    <div class="border rounded" id="booking" style="padding: 20px;">
+        <h3 id="title"><b>{{ booking.name }}</b></h3>
+        <h4 id="description">{{ booking.description }}</h4>
+        <h4 id="start"><b>{{ booking.start }}</b></h4>
+        <h4 id="end"><b>{{ booking.end }}</b></h4>
+    </div>
+    <br>
+    {% endfor %}
+</div>
+
+<div>
+    <a href="{{url_for('make_booking',id=user.id, username=user.username, balance=user.balance, insufficientBalance=0)}}" class="btn btn-primary" id="btn-submit" >Make Booking</a><br><br>
+</div>
+
+
 <div>
     <a href='/update_user/{{ user.username }}' class="btn btn-primary" id="btn-submit" >Update Profile</a><br><br>
 </div>
