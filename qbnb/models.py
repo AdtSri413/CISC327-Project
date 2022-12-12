@@ -529,9 +529,20 @@ def update_listing(old_name, new_name, description, price,
     return True
 
 
-def book_listing(listing_name, start_date, end_date, user_name):
+def book_listing(listing_name, start_date, end_date, username):
+    '''
+    Description: Book a Listing (Updates user balance and adds Booking entry)
+        Parameters:
+            listing_name (string): Name of listing being booked
+            start_date (datetime): beginning of stay
+            end_date (datetime): end of stay
+            username (string): username of user who is booking the listing
+        Returns:
+            True if booking succeeded. Otherwise False
+    '''
+
     # Check that the user exists
-    user = User.query.filter_by(username=user_name).first()
+    user = User.query.filter_by(username=username).first()
     if user is None or user == "":
         print("BOOK LISTING ERROR: User does not exist")
         return False
