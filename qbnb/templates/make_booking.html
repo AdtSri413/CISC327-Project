@@ -1,25 +1,28 @@
-{% extends 'base.html' %}
-
-{% block header %}
+{% extends 'base.html' %} {% block header %}
 <h1>{% block title %}Profile{% endblock %}</h1>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <h1 id="welcome-header"><b>Here are listings available for booking:</b></h1>
 
-<h2>Available balance: {{ balance }}</h2><br>
-<h3>{{ insBalMsg }}</h3><br>
+<h2>Available balance: {{ balance }}</h2>
+<br />
+<h3>{{ insBalMsg }}</h3>
+<br />
 
 <div id="listings">
-    {% for listing in listings %}
-    <div class="border rounded" id="listing" style="padding: 20px;">
-        <h3 id="title"><b>{{ listing.name }}</b></h3>
-        <h4 id="description">{{ listing.description }}</h4>
-        <h4 id="price"><b>{{ listing.price }}</b></h4>
-        <a href="{{url_for('book_get',username=username,title=listing.name, price=listing.price, balance=balance, id=id)}}">{{ listing.book }}</a> <!-- Link this to the update listing page -->
-    </div>
-    <br>
-    {% endfor %}
+  {% for listing in listings %}
+  <div class="border rounded" id="listing" style="padding: 20px">
+    <h3 id="title"><b>{{ listing.name }}</b></h3>
+    <h4 id="description">{{ listing.description }}</h4>
+    <h4 id="price"><b>{{ listing.price }}</b></h4>
+    <a
+      href="{{url_for('book_get',username=username,title=listing.name, price=listing.price, balance=balance, id=id)}}"
+      name="{{listing.name}}"
+      >{{ listing.book }}</a
+    >
+    <!-- Link this to the update listing page -->
+  </div>
+  <br />
+  {% endfor %}
 </div>
 
 {% endblock %}
