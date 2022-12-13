@@ -152,6 +152,8 @@ def register_post():
     "/<string:username>/<float:balance>/<int:insufficientBalance>"
 )
 def make_booking(id, username, balance, insufficientBalance):
+    # Routing to page which lists all available bookings
+
     complete_listings = Listing.query.filter(Listing.owner_id != id).all()
     if len(complete_listings) > 0:
         listings = []
@@ -161,9 +163,12 @@ def make_booking(id, username, balance, insufficientBalance):
     else:
         listings = [{"name": "No available booking!", "description": "",
                     "price": "", "edit": ""}]
+
     if (insufficientBalance):
+        #Booking price > User balance
         insBalMsg = "You have insufficient balance to book this listing"
     else:
+        #Booking price < User balance
         insBalMsg = ""
     return render_template(
         'make_booking.html', id=id, username=username,
@@ -177,13 +182,17 @@ def make_booking(id, username, balance, insufficientBalance):
     methods=['Get']
 )
 def book_get(username, title, price, balance, id):
+    #Checks if user has sufficient balance for booking
     price_dec = Decimal(price.strip('$'))
     if (price_dec > balance):
+        #Insufficient balance
         return redirect(url_for(
             'make_booking', 
-            id=id, username=username, bal=balance, insBal=1)
+            id=id, username=username,
+            balance=balance, insufficientBalance=1)
         )
     else:
+        #Sufficient balance, redirect to make booking
         return render_template(
             'booking_page.html', username=username, title=title
         )
@@ -191,6 +200,7 @@ def book_get(username, title, price, balance, id):
 
 @app.route('/book/<string:username>/<string:title>', methods=['Post'])
 def book_post(username, title):
+    #Creates booking with selected start and end date
     format = '%Y-%m-%d'
     start = datetime.strptime(request.form.get('start'), format)
     end = datetime.strptime(request.form.get('end'), format)
