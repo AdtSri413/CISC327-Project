@@ -4,7 +4,9 @@ from qbnb_test.conftest import base_url
 from unittest.mock import patch
 from qbnb.models import User
 
-
+'''
+Tests the frontend for making bookings
+'''
 class FrontEndBookingTest(BaseCase):
     '''
     Uses EXHAUSTIVE OUTPUT TESTING as white-box testing methodology
