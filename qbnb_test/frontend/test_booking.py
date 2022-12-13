@@ -4,9 +4,12 @@ from qbnb_test.conftest import base_url
 from unittest.mock import patch
 from qbnb.models import User
 
+
 '''
 Tests the frontend for making bookings
 '''
+
+
 class FrontEndBookingTest(BaseCase):
     '''
     Uses EXHAUSTIVE OUTPUT TESTING as white-box testing methodology
@@ -34,7 +37,8 @@ class FrontEndBookingTest(BaseCase):
         # create listing
         self.click("a#create-listing")
         self.type("#title", "Example Listing 1")
-        self.type("#description", "Example listing for next created user to book (test_booking_1)")
+        self.type("#description", 
+                  "Example listing for next created user to book")
         self.type("#price", 555)
         self.click('input[type="submit"]')
         # logout
@@ -60,7 +64,6 @@ class FrontEndBookingTest(BaseCase):
         # check for successful booking
         self.assert_text("Example Listing 1", "#booking-title")
 
-
     def test_booking_2(self, *_):
         '''
         Test should produce "cannot book own listing" message
@@ -80,12 +83,14 @@ class FrontEndBookingTest(BaseCase):
         # create listing
         self.click("a#create-listing")
         self.type("#title", "Example Listing 2")
-        self.type("#description", "Example listing for this same user to book (test_booking_2)")
+        self.type("#description", 
+                  "Example listing for this same user to book")
         self.type("#price", 555)
         self.click('input[type="submit"]')
         # reserve booking as agent -> booking should fail
         self.click("a#make-booking")
-        own_booking_visibility = self.is_text_visible("Example Listing 2", "#title")
+        own_booking_visibility = self.is_text_visible("Example Listing 2",
+                                                      "#title")
         assert own_booking_visibility is False
 
     def test_booking_3(self, *_):
@@ -107,7 +112,8 @@ class FrontEndBookingTest(BaseCase):
         # create booking
         self.click("a#create-listing")
         self.type("#title", "Example Listing 3")
-        self.type("#description", "Example listing for next created user to book (test_booking_3)")
+        self.type("#description", 
+                  "Example listing for next created user to book")
         self.type("#price", 555)
         self.click('input[type="submit"]')
         # register as customer 1
@@ -148,7 +154,8 @@ class FrontEndBookingTest(BaseCase):
         self.click('input[type="submit"]')
         # check that booking does not exist
         self.open(base_url + '/home')
-        clash_booking_visibility = self.is_text_visible("Example Listing 3", "#booking-title")
+        clash_booking_visibility = self.is_text_visible("Example Listing 3", 
+                                                        "#booking-title")
         assert clash_booking_visibility is False
 
     def test_booking_4(self, *_):
@@ -170,7 +177,8 @@ class FrontEndBookingTest(BaseCase):
         # create booking with very high cost
         self.click("a#create-listing")
         self.type("#title", "Example Listing 4")
-        self.type("#description", "Example listing for next created user to book (test_booking_4)")
+        self.type("#description", 
+                  "Example listing for next created user to book")
         self.type("#price", 5555)
         self.click('input[type="submit"]')
         # register as customer
@@ -193,5 +201,6 @@ class FrontEndBookingTest(BaseCase):
         self.click('input[type="submit"]')
         # check that booking does not exist
         self.open(base_url + '/home')
-        clash_booking_visibility = self.is_text_visible("Example Listing 4", "#booking-title")
+        clash_booking_visibility = self.is_text_visible("Example Listing 4",
+                                                        "#booking-title")
         assert clash_booking_visibility is False
