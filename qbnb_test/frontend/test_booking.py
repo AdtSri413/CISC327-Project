@@ -18,6 +18,7 @@ class FrontEndBookingTest(BaseCase):
         - Failed booking -> overlapping dates
         - Failed booking -> insufficient balance
     '''
+
     def test_booking_1(self, *_):
         '''
         Test should produce successful booking message
@@ -37,7 +38,7 @@ class FrontEndBookingTest(BaseCase):
         # create listing
         self.click("a#create-listing")
         self.type("#title", "Example Listing 1")
-        self.type("#description", 
+        self.type("#description",
                   "Example listing for next created user to book")
         self.type("#price", 555)
         self.click('input[type="submit"]')
@@ -83,7 +84,7 @@ class FrontEndBookingTest(BaseCase):
         # create listing
         self.click("a#create-listing")
         self.type("#title", "Example Listing 2")
-        self.type("#description", 
+        self.type("#description",
                   "Example listing for this same user to book")
         self.type("#price", 555)
         self.click('input[type="submit"]')
@@ -112,7 +113,7 @@ class FrontEndBookingTest(BaseCase):
         # create booking
         self.click("a#create-listing")
         self.type("#title", "Example Listing 3")
-        self.type("#description", 
+        self.type("#description",
                   "Example listing for next created user to book")
         self.type("#price", 555)
         self.click('input[type="submit"]')
@@ -154,7 +155,7 @@ class FrontEndBookingTest(BaseCase):
         self.click('input[type="submit"]')
         # check that booking does not exist
         self.open(base_url + '/home')
-        clash_booking_visibility = self.is_text_visible("Example Listing 3", 
+        clash_booking_visibility = self.is_text_visible("Example Listing 3",
                                                         "#booking-title")
         assert clash_booking_visibility is False
 
@@ -177,7 +178,7 @@ class FrontEndBookingTest(BaseCase):
         # create booking with very high cost
         self.click("a#create-listing")
         self.type("#title", "Example Listing 4")
-        self.type("#description", 
+        self.type("#description",
                   "Example listing for next created user to book")
         self.type("#price", 5555)
         self.click('input[type="submit"]')
@@ -196,11 +197,9 @@ class FrontEndBookingTest(BaseCase):
         # reserve high cost booking -> booking should fail
         self.click("a#make-booking")
         self.click('a[name="Example Listing 4"]')
-        self.type("#start", "01/01/2023")
-        self.type("#end", "20/01/2023")
-        self.click('input[type="submit"]')
         # check that booking does not exist
-        self.open(base_url + '/home')
-        clash_booking_visibility = self.is_text_visible("Example Listing 4",
-                                                        "#booking-title")
-        assert clash_booking_visibility is False
+        clash_booking_visibility = self.is_text_visible(
+            "You have insufficient "
+            "balance to book this listing",
+            "h3")
+        assert clash_booking_visibility is True
