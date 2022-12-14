@@ -1,7 +1,7 @@
 version: "2"
 services:
   qbnb-web:
-    image: paynwahs/queens_cmpe327_project:v1
+    image: paynwahs/queens_cmpe327_project:v2
     depends_on:
        - qbnb-db
     links:
