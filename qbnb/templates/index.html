@@ -1,36 +1,62 @@
-{% extends 'base.html' %}
-
-{% block header %}
+{% extends 'base.html' %} {% block header %}
 <h1>{% block title %}Profile{% endblock %}</h1>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <h1 id="welcome-header"><b>Welcome, {{ user.username }}!</b></h1>
 
-
-<h2>Here are all of your listings:</h2><br>
+<h2>Here are all of your listings:</h2>
+<br />
 
 <div id="listings">
-    {% for listing in listings %}
-    <div class="border rounded" id="listing" style="padding: 20px;">
-        <h3 id="title"><b>{{ listing.name }}</b></h3>
-        <h4 id="description">{{ listing.description }}</h4>
-        <h4 id="price"><b>{{ listing.price }}</b></h4>
-        <a href="/update_listing/{{ listing.name }}">{{ listing.edit }}</a> <!-- Link this to the update listing page -->
-    </div>
-    <br>
-    {% endfor %}
+  {% for listing in listings %}
+  <div class="border rounded" id="listing" style="padding: 20px">
+    <h3 id="title"><b>{{ listing.name }}</b></h3>
+    <h4 id="description">{{ listing.description }}</h4>
+    <h4 id="price"><b>{{ listing.price }}</b></h4>
+    <a href="/update_listing/{{ listing.name }}">{{ listing.edit }}</a>
+    <!-- Link this to the update listing page -->
+  </div>
+  <br />
+  {% endfor %}
 </div>
 
 <div>
-    <a href='/create_listing' class="btn btn-primary" id="btn-submit" >Create Listing</a><br><br>
+  <a href="/create_listing" class="btn btn-primary" id="create-listing"
+    >Create Listing</a
+  ><br /><br />
+</div>
+
+<h2>Here are all of your Bookings:</h2>
+<br />
+
+<div id="bookings">
+  {% for booking in bookings %}
+  <div class="border rounded" id="booking" style="padding: 20px">
+    <h3 id="booking-title"><b>{{ booking.name }}</b></h3>
+    <h4 id="{{booking.name}}">{{ booking.description }}</h4>
+    <h4 id="booking-start"><b>{{ booking.start }}</b></h4>
+    <h4 id="booking-end"><b>{{ booking.end }}</b></h4>
+  </div>
+  <br />
+  {% endfor %}
 </div>
 
 <div>
-    <a href='/update_user/{{ user.username }}' class="btn btn-primary" id="btn-submit" >Update Profile</a><br><br>
+  <a
+    href="{{url_for('make_booking',id=user.id, username=user.username, balance=user.balance, insufficientBalance=0)}}"
+    class="btn btn-primary"
+    id="make-booking"
+    >Make Booking</a
+  ><br /><br />
 </div>
 
 <div>
-    <a href='/logout'>logout</a><br><br>
+  <a
+    href="/update_user/{{ user.username }}"
+    class="btn btn-primary"
+    id="update-profile"
+    >Update Profile</a
+  ><br /><br />
 </div>
+
+<div><a href="/logout" id="logout">logout</a><br /><br /></div>
 {% endblock %}

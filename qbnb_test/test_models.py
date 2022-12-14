@@ -114,7 +114,7 @@ def test_r1_9_register():
 def test_r1_10_register():
     user = register(username="user 9", email="test9@test.com",
                     password="Test123?")
-    assert user.balance == 100
+    assert user.balance == 5000
 
 
 def test_r4_1_create_listing():
@@ -519,7 +519,7 @@ def test_r6_1_book_listing():
     # Check that the cost of the listing was deducted from the user's 
     # balance properly
     user = User.query.filter_by(username="user 6 1").first()
-    assert user.balance == 50
+    assert user.balance == 4950
 
 
 def test_r6_2_book_listing():
@@ -558,7 +558,7 @@ def test_r6_2_book_listing():
     # Check that the cost of the listing was deducted from the user's 
     # balance properly
     user = User.query.filter_by(username="user 6 2").first()
-    assert user.balance == 50
+    assert user.balance == 4950
 
 
 def test_r6_3_book_listing():
@@ -585,7 +585,7 @@ def test_r6_3_book_listing():
     # Create an expensive listing and register it to the owner
     create_listing(
         'Ex title R6 3 2', 'Ex description of listing',
-        500, today, 'owner63@test.com')
+        6000, today, 'owner63@test.com')
 
     # Set start and end dates of booking
     start_date = today + dt.timedelta(days=1)  # 1 day from now
@@ -602,7 +602,7 @@ def test_r6_3_book_listing():
     # Check that the cost of the listing was deducted from the user's 
     # balance properly
     user = User.query.filter_by(username="user 6 3").first()
-    assert user.balance == 50
+    assert user.balance == 4950
 
 
 def test_r6_4_book_listing():
@@ -651,4 +651,4 @@ def test_r6_4_book_listing():
     # Check that the cost of the listing was deducted from the user's 
     # balance properly
     user = User.query.filter_by(username="user 6 4").first()
-    assert user.balance == 50
+    assert user.balance == 4950

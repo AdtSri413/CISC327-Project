@@ -149,9 +149,9 @@ def register(username, email, password):
             max_id = row[0]
     # R1-8: Billing address is empty at registration
     # R1-9: Postal code is empty at registration
-    # R1-10: Balance initialised as 100 at registration
+    # R1-10: Balance initialised as 5000 at registration
     new_user = User(username=username, email=email, password=password,
-                    billing_address="", postal_code="", balance=100,
+                    billing_address="", postal_code="", balance=5000,
                     id=(max_id + 1))  # increments max_id by 1 for uniqueness
     db.session.add(new_user)
     try:
@@ -527,7 +527,7 @@ def update_listing(old_name, new_name, description, price,
     # Save changes to database
     db.session.commit()
     return True
-
+    
 
 def book_listing(listing_name, start_date, end_date, username):
     '''
@@ -555,12 +555,12 @@ def book_listing(listing_name, start_date, end_date, username):
 
     # check that the start date is after now
     now = datetime.now()
-    if start_date.day < now.day:
+    if start_date < now:
         print("BOOK LISTING ERROR: Start date is in the past")
         return False
 
     # check that the end date is after the start date
-    if end_date.day <= start_date.day:
+    if end_date <= start_date:
         print("BOOK LISTING ERROR: End date should be after start date")
         return False
 
@@ -602,8 +602,8 @@ def book_listing(listing_name, start_date, end_date, username):
     id += 1
 
     # Book listing
-    booking = Booking(id=id, date=now, start=start_date, end=end_date, 
-                      price=listing.price, user_id=user.id, 
+    booking = Booking(id=id, date=now, start=start_date, end=end_date,
+                      price=listing.price, user_id=user.id,
                       listing_id=listing.id)
     # add booking to the current database session
     db.session.add(booking)
@@ -613,9 +613,9 @@ def book_listing(listing_name, start_date, end_date, username):
     # Remove money from user's balance
     db.session.delete(user)
     db.session.commit()
-    user = User(username=user.username, email=user.email, 
-                password=user.password, billing_address=user.billing_address, 
-                postal_code=user.postal_code, 
+    user = User(username=user.username, email=user.email,
+                password=user.password, billing_address=user.billing_address,
+                postal_code=user.postal_code,
                 balance=(user.balance - listing.price), id=user.id)
     db.session.add(user)
     db.session.commit()

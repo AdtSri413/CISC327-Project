@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<h4 id='message'>Make a booking for {{title}}</h4>
+<h4 id='message'>{{message}}</h4>
+<form action="{{url_for('book_post',username=username, title=title)}}" method="post">
+  <div class="form-group">
+    <label for="start">Booking start date</label>
+    <input type="date" class="form-control" id="start" name="start"
+       value="2022-12-12"
+       min="2022-12-12" max="2999-12-31" required>
+    <br>
+    <label for="end">Booking end date</label>
+    <input type="date" class="form-control" id="end" name="end"
+        value="2022-12-13"
+        min="2022-12-13" max="2999-12-31" required>
+    <br>
+    <input class="btn btn-primary" type="submit" value="Submit Booking">
+  </div>
+</form>
+
+{% endblock %}
